@@ -1,6 +1,6 @@
 <script setup>
 import { ref, nextTick, onMounted, onUnmounted } from 'vue'
-import { ArrowUpRight, ArrowRight, ChevronDown, Search, Globe2, Menu, X, Server, Mail, LifeBuoy, BookOpen, Sun, Moon } from 'lucide-vue-next'
+import { ArrowUpRight, ArrowRight, ChevronDown, Search, Globe2, Menu, X, Server, Mail, LifeBuoy, BookOpen } from 'lucide-vue-next'
 import { domainSuggestions } from './domain'
 import PrismSteps from './components/PrismSteps.vue'
 import DomainStory from './components/DomainStory.vue'
@@ -10,17 +10,11 @@ import PremiumButton from './components/PremiumButton.vue'
 import GradientBackdrop from './components/GradientBackdrop.vue'
 import { motion } from 'motion-v'
 const reducedMotion = ref(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
-const theme = ref(new URLSearchParams(window.location.search).get('theme') === 'dark' ? 'dark' : 'light')
+// Light theme is retained for later, but is currently unavailable to visitors.
+const theme = ref('dark')
 function applyTheme() {
  document.documentElement.dataset.theme = theme.value
  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme.value === 'light' ? '#fafaf8' : '#030303')
-}
-function toggleTheme() {
- theme.value = theme.value === 'light' ? 'dark' : 'light'
- applyTheme()
- const url = new URL(window.location.href)
- url.searchParams.set('theme', theme.value)
- window.history.replaceState({}, '', url)
 }
 applyTheme()
 const baseUrl = import.meta.env.BASE_URL
@@ -66,7 +60,7 @@ onUnmounted(()=>document.removeEventListener('keydown',escape))
       </div>
      </div>
     </nav>
-    <div class="header-actions flex items-center"><button class="theme-toggle" :aria-label="theme === 'light' ? 'Switch to original dark theme' : 'Switch to light theme'" :title="theme === 'light' ? 'Original dark theme' : 'Light theme'" @click="toggleTheme"><Moon v-if="theme === 'light'" :size="17" stroke-width="1.5"/><Sun v-else :size="17" stroke-width="1.5"/></button><button class="contact-button" @click.stop="selectItem({title:'Help & support'})">Let?s talk <ArrowUpRight :size="14"/></button><PremiumButton variant="header" @click="focusSearch">Get started<template #icon><ArrowUpRight :size="15"/></template></PremiumButton><button class="mobile-toggle" aria-label="Toggle navigation" :aria-expanded="mobileOpen" aria-controls="mobile-nav" @click="mobileOpen=!mobileOpen"><X v-if="mobileOpen" :size="22"/><Menu v-else :size="22"/></button></div>
+    <div class="header-actions flex items-center"><button class="contact-button" @click.stop="selectItem({title:'Help & support'})">Let?s talk <ArrowUpRight :size="14"/></button><PremiumButton variant="header" @click="focusSearch">Get started<template #icon><ArrowUpRight :size="15"/></template></PremiumButton><button class="mobile-toggle" aria-label="Toggle navigation" :aria-expanded="mobileOpen" aria-controls="mobile-nav" @click="mobileOpen=!mobileOpen"><X v-if="mobileOpen" :size="22"/><Menu v-else :size="22"/></button></div>
    </div>
    <nav v-if="mobileOpen" id="mobile-nav" class="mobile-nav" aria-label="Mobile navigation"><div v-for="(items,name) in menuItems" :key="name"><p>{{name}}</p><button v-for="item in items" :key="item.title" @click="selectItem(item)">{{item.title}}<ArrowUpRight :size="16"/></button></div></nav>
   </header>
