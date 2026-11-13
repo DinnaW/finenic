@@ -1,7 +1,7 @@
 name: Deploy to GitHub Pages
 on:
-  push:
-    branches: [main]
+  # Pages currently publishes the prebuilt gh-pages branch.
+  # Keep this alternative Actions deployment available for manual migration.
   workflow_dispatch:
 permissions:
   contents: read
