@@ -108,7 +108,7 @@ onUnmounted(() => cleanup())
 }
 .brand-description {
   position: relative;
-  top: calc(-1 * clamp(20px, 2.5vw, 44px));
+  top: calc(-1 * clamp(8px, 1vw, 18px));
   z-index: 1;
   margin: 0;
   text-align: center;
@@ -126,7 +126,7 @@ onUnmounted(() => cleanup())
   z-index: 0;
   left: 50%;
   top: -4.4em;
-  width: 5.8em;
+  width: 5.2em;
   transform: translateX(-50%);
   pointer-events: none;
 }
@@ -145,7 +145,7 @@ onUnmounted(() => cleanup())
   .statement-composition { max-width: 680px; font-size: clamp(26px, 5.2vw, 39px); }
   .brand-description { line-height: 1.4; }
   .statement-line { display: inline; }
-  .film-position { top: -6em; width: 7.8em; }
+  .film-position { top: -6em; width: 7em; }
 }
 @media (prefers-reduced-motion: reduce) {
   .statement-film { transform: none; }
