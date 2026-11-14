@@ -1,8 +1,9 @@
 <script setup>
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
-import { ArrowUpRight, ArrowRight, ArrowLeft } from 'lucide-vue-next'
+import { ArrowUpRight, ArrowRight, ArrowLeft, Pause, Play } from 'lucide-vue-next'
 import { motion, useReducedMotion } from 'motion-v'
 import ProductPreview from './ProductPreview.vue'
+import GlassBarBackdrop from './ui/GlassBarBackdrop.vue'
 import SpecularButton from './specular/SpecularButton.vue'
 import { industries, salonPackageUrl } from '../data/industryCatalog'
 
@@ -10,6 +11,7 @@ const emit = defineEmits(['search-domain'])
 const selected = ref(0), tablist = ref(null), notice = ref(null)
 const active = computed(() => industries[selected.value])
 const reduced = useReducedMotion()
+const previewsPaused = ref(false)
 const section = ref(null), firstCard = ref(0), visibleCount = ref(4), atEnd = ref(false)
 const cardCount = computed(() => active.value.cards.length + (active.value.id === 'salon' ? 1 : 0))
 const lastCard = computed(() => Math.min(firstCard.value + visibleCount.value, cardCount.value))
@@ -88,7 +90,7 @@ function getPackage() {
         <Transition name="industry-content" appear>
           <div v-if="active.id === industry.id" :key="active.id" class="product-grid" role="region" :aria-label="`${active.label} product carousel`" aria-roledescription="carousel" tabindex="0" @scroll.passive="updateCarousel" @keydown="carouselKeys">
             <article v-for="card in active.cards" :key="`${active.id}-${card.id}`" class="product-card">
-              <ProductPreview :item="card" :business="active.shortName" />
+              <ProductPreview :item="card" :business="active.shortName" :paused="previewsPaused" />
               <div class="product-copy">
                 <h3>{{ card.title }}</h3>
                 <p>{{ card.copy }}</p>
@@ -100,6 +102,7 @@ function getPackage() {
 
             <article v-if="active.id === 'salon'" class="product-card package-card">
               <div class="package-visual" aria-hidden="true">
+                <GlassBarBackdrop />
                 <div class="package-top">Made for your Salon & Spa</div>
                 <div class="package-message">One account.<br>One bill.</div>
                 <div class="package-brands"><span>Domains</span><span>Saptify</span><span>Ipsova</span><span>Smardove</span></div>
@@ -115,7 +118,7 @@ function getPackage() {
         </Transition>
       </div>
       <div class="carousel-footer">
-        <p class="preview-caption">Illustrative product previews.</p>
+        <div class="preview-options"><p class="preview-caption">Illustrative product demos.</p><button v-if="!reduced" class="preview-pause" :aria-pressed="previewsPaused" @click="previewsPaused = !previewsPaused"><Play v-if="previewsPaused" :size="14" aria-hidden="true"/><Pause v-else :size="14" aria-hidden="true"/>{{ previewsPaused ? 'Play demos' : 'Pause demos' }}</button></div>
         <div class="carousel-controls">
           <span class="carousel-count" aria-live="polite">{{ firstCard + 1 }}–{{ lastCard }} <span>of {{ cardCount }}</span></span>
           <button type="button" aria-label="Previous products" :disabled="firstCard === 0" @click="moveCarousel(-1)"><ArrowLeft :size="18" /></button>
@@ -127,11 +130,11 @@ function getPackage() {
 </template>
 
 <style scoped>
-.industry-showcase { background:#fafbf9; color:#111; padding:clamp(60px,7vw,120px) 5vw clamp(64px,7vw,120px); color-scheme:light; }
-.industry-inner { max-width:1680px; margin-inline:auto; }
+.industry-showcase { background:#fafbf9; color:#111; padding:clamp(60px,7vw,120px) var(--section-gutter) clamp(64px,7vw,120px); color-scheme:light; }
+.industry-inner { max-width:var(--section-width); margin-inline:auto; }
 .industry-heading-row { display:flex; justify-content:space-between; align-items:end; gap:6vw; margin-bottom:clamp(30px,3vw,52px); }
-.industry-heading-row h2 { margin:0; font-size:clamp(32px,3.35vw,56px); line-height:1.13; font-weight:500; letter-spacing:-.035em; }
-.industry-heading-row>p { margin:0 0 3px; color:#666666; font-size:clamp(14px,1.05vw,17px); line-height:1.7; }
+.industry-heading-row h2 { margin:0; font-size:var(--type-section-heading); line-height:var(--type-heading-leading); font-weight:450; letter-spacing:-.035em; }
+.industry-heading-row>p { margin:0 0 3px; color:#666666; font-size:var(--type-description); line-height:1.7; }
 .industry-tabs { position:relative; display:flex; gap:clamp(4px,.65vw,12px); align-items:center; overflow-x:auto; scrollbar-width:thin; scrollbar-color:#cacaca transparent; padding:5px 0 13px; margin-bottom:clamp(22px,2.3vw,38px); border-bottom:1px solid #dce0df; }
 .industry-tabs button { position:relative; isolation:isolate; flex-shrink:0; min-height:46px; padding:0 clamp(13px,1.5vw,24px); border-radius:999px; font-size:13px; font-weight:500; white-space:nowrap; color:#616161; transition:color .25s; }
 .industry-tabs button[aria-selected=true] { color:#fff; }
@@ -156,18 +159,21 @@ function getPackage() {
 .product-card { min-width:0; }
 .product-copy { padding:clamp(18px,1.5vw,26px) 0 0; }
 .product-copy h3 { font-weight:500; font-size:clamp(18px,1.5vw,25px); letter-spacing:-.025em; line-height:1.3; margin:0 0 10px; }
-.product-copy>p { color:#666666; font-size:clamp(13px,1vw,16px); line-height:1.65; margin:0; max-width:40ch; min-height:3.3em; text-wrap:pretty; }
+.product-copy>p { color:#666666; font-size:var(--type-description); line-height:1.65; margin:0; max-width:40ch; min-height:3.3em; text-wrap:pretty; }
 .product-action { display:inline-flex; align-items:center; justify-content:center; gap:12px; min-height:44px; padding:0 17px; border-radius:999px; margin-top:18px; background:#111; color:white; font-size:12px; font-weight:500; text-align:left; }
 .product-action svg { transition:transform .25s; }
 .product-action:hover svg { transform:translate(2px,-2px); }
 .product-action:hover { background:#333; color:white; }
 .product-copy .product-notice { font-size:12px; min-height:0; margin-top:8px; color:#545454; }
-.package-visual { display:flex; flex-direction:column; justify-content:space-between; padding:7.5%; aspect-ratio:.94; border-radius:12px; background:linear-gradient(140deg,#e9e7e0,#d9d6cb 60%,#e3d8d3); color:#242420; }
+.package-visual { position:relative; isolation:isolate; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; padding:7.5%; aspect-ratio:.94; border-radius:12px; background:#dcecfb; color:#172135; }
 .package-top { font-size:clamp(11px,.9vw,15px); font-weight:500; }
 .package-message { font-size:clamp(29px,2.65vw,45px); font-weight:500; letter-spacing:-.04em; line-height:1.1; padding-block:5%; }
-.package-brands { display:flex; flex-wrap:wrap; gap:6px; }.package-brands span { font-size:clamp(9px,.8vw,13px); padding:6px 10px; background:#ffffff80; border-radius:999px; color:#515151; }
+.package-brands { display:flex; flex-wrap:wrap; gap:6px; }.package-brands span { font-size:clamp(9px,.8vw,13px); padding:6px 10px; background:#ffffff80; border:1px solid #ffffffa6; border-radius:999px; color:#172135; }
 .package-action { margin-top:15px; }
 .preview-caption { color:#6d6d67; font-size:11px; margin:0; }
+.preview-options { display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+.preview-pause { display:inline-flex; align-items:center; gap:6px; min-height:44px; font-size:12px; color:#172135; }
+@media(max-width:620px) { .preview-options { gap:0; flex-direction:column; align-items:start; } }
 .industry-content-enter-active { transition:opacity .35s ease,transform .45s cubic-bezier(.16,1,.3,1); }
 .industry-content-enter-from { opacity:0; transform:translateY(9px); }
 .industry-content-leave-active { display:none; }
@@ -181,16 +187,16 @@ function getPackage() {
   .package-brands span { font-size:10px; }
 }
 @media(max-width:620px) {
-  .industry-showcase { padding:16vw 6vw 12vw; }
+  .industry-showcase { padding:16vw var(--section-gutter) 12vw; }
   .industry-heading-row { display:block; margin-bottom:7vw; }
-  .industry-heading-row h2 { font-size:clamp(30px,8vw,42px); }
-  .industry-heading-row>p { font-size:14px; margin-top:6vw; }
+  .industry-heading-row h2 { font-size:var(--type-section-heading); }
+  .industry-heading-row>p { font-size:var(--type-description); margin-top:6vw; }
   .industry-tabs { margin-right:-6vw; padding-right:6vw; margin-bottom:7vw; }
   .industry-tabs button { font-size:12px; padding-inline:16px; }
   .product-grid { grid-auto-columns:90%; }
   .product-copy { padding-top:5vw; }
   .product-copy h3 { font-size:21px; }
-  .product-copy>p { font-size:14px; min-height:0; max-width:38ch; }
+  .product-copy>p { font-size:var(--type-description); min-height:0; max-width:38ch; }
   .product-action { margin-top:5px; }
   .package-message { font-size:clamp(38px,11vw,62px); }
   .package-top { font-size:12px; }

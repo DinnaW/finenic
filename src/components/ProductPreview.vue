@@ -1,15 +1,23 @@
 <script setup>
-import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
 import { useReducedMotion } from 'motion-v'
 import Globe from './inspira/Globe.vue'
+import GlassBarBackdrop from './ui/GlassBarBackdrop.vue'
 import AnimatedList from './inspira/AnimatedList.vue'
 import AnimatedBeam from './inspira/AnimatedBeam.vue'
 import { Globe2, Search, Check, ArrowRight, CalendarDays, ChevronLeft, ChevronRight, Clock, Mail, Bell, ShoppingBag, CreditCard, QrCode, Building2, MessageCircle, Server, ShieldCheck, RefreshCw, Link2, ArrowUpRight } from 'lucide-vue-next'
 
-const props = defineProps({ item: Object, business: String })
+const props = defineProps({ item: Object, business: String, paused: Boolean })
 const root = ref(null), visible = ref(false)
 const reduced = useReducedMotion(), pageVisible = ref(true)
-const animate = computed(() => visible.value && pageVisible.value && !reduced.value)
+const animate = computed(() => visible.value && pageVisible.value && !reduced.value && !props.paused)
+const phase = ref(0)
+const demoPhase = computed(() => reduced.value ? 3 : phase.value)
+let demoTimer
+watch(animate, (running) => {
+  clearInterval(demoTimer)
+  if (running) demoTimer = setInterval(() => { phase.value = (phase.value + 1) % 4 }, 1800)
+}, { immediate:true })
 const branchHub = ref(null), branches = ref([])
 const syncFrom = ref(null), syncTo = ref(null), syncContainer = ref(null)
 const emailItems = [
@@ -43,11 +51,12 @@ onMounted(() => {
   observer = new IntersectionObserver(([entry]) => { visible.value = entry.isIntersecting }, { threshold: .15 })
   observer.observe(root.value)
 })
-onUnmounted(() => { observer?.disconnect(); document.removeEventListener('visibilitychange', visibilityChanged) })
+onUnmounted(() => { clearInterval(demoTimer); observer?.disconnect(); document.removeEventListener('visibilitychange', visibilityChanged) })
 </script>
 
 <template>
-  <div ref="root" class="product-preview" :class="[`tone-${item.tone}`, `preview-${item.visual}`, { 'preview-awake': animate }]" aria-hidden="true">
+  <div ref="root" class="product-preview" :class="[`tone-${item.tone}`, `preview-${item.visual}`, `demo-phase-${demoPhase}`, { 'preview-awake': animate }]" :data-demo-phase="demoPhase" aria-hidden="true">
+    <GlassBarBackdrop :variant="item.tone" />
     <div class="preview-brand">{{ item.brand }}<span v-if="item.id === 'domain'">Start here</span></div>
 
     <template v-if="item.visual === 'domain'">
@@ -55,7 +64,7 @@ onUnmounted(() => { observer?.disconnect(); document.removeEventListener('visibi
       <div class="ui-window domain-window">
         <div class="ui-window-bar"><i></i><i></i><i></i><span>Your next chapter</span></div>
         <div class="domain-query"><Search :size="15"/><span>yourbusiness<span class="typing-caret"></span></span><div><ArrowRight :size="14"/></div></div>
-        <div class="domain-result-preview"><span>yourbusiness<strong>.com</strong></span><span class="domain-check"><Check :size="13"/> Your name</span></div>
+        <div class="domain-result-preview"><span>yourbusiness<strong>.com</strong></span><span class="domain-check"><Check v-if="demoPhase >= 2" :size="13"/><Search v-else :size="13"/>{{ demoPhase >= 2 ? 'Your name' : 'Searching' }}</span></div>
         <div class="domain-extensions"><span>.com</span><span>.lk</span><span>.store</span></div>
       </div>
     </template>
@@ -64,19 +73,19 @@ onUnmounted(() => { observer?.disconnect(); document.removeEventListener('visibi
       <div class="ui-window booking-window">
         <div class="ui-title"><span>Choose your moment</span><CalendarDays :size="16"/></div>
         <div class="calendar-month"><ChevronLeft :size="12"/><span>November</span><ChevronRight :size="12"/></div>
-        <div class="calendar-week"><span v-for="(day, i) in ['M','T','W','T','F','S','S']" :key="i">{{day}}</span><span v-for="day in 14" :key="day" :class="{'selected-day': day === 12}">{{day}}</span></div>
-        <div class="booking-times"><span>10:00</span><span class="chosen-time">10:30</span><span>11:00</span></div>
+        <div class="calendar-week"><span v-for="(day, i) in ['M','T','W','T','F','S','S']" :key="i">{{day}}</span><span v-for="day in 14" :key="day" :class="{'selected-day': day === 12 && demoPhase >= 1}">{{day}}</span></div>
+        <div class="booking-times"><span>10:00</span><span :class="{ 'chosen-time': demoPhase >= 2 }">10:30</span><span>11:00</span></div>
       </div>
-      <div class="floating-note ui-confirm"><span class="note-icon"><Check :size="15"/></span><div><strong>You're booked.</strong><small>Thursday, 10:30 am</small></div></div>
+      <div class="floating-note demo-confirm" :class="{ 'is-confirmed': demoPhase === 3 }"><span class="note-icon"><Check :size="15"/></span><div><strong>You're booked.</strong><small>Thursday, 10:30 am</small></div></div>
     </template>
 
     <template v-else-if="item.visual === 'app'">
       <div class="app-phone">
         <div class="phone-camera"></div><div class="phone-time">9:41</div>
         <img :src="`${base}images/business/salon.jpg`" alt="" loading="lazy">
-        <div class="app-body"><small>{{ business }}</small><strong>A moment<br>for yourself.</strong><div class="app-choice"><span>Cut & styling</span><ArrowUpRight :size="12"/></div><div class="app-choice"><span>Your appointments</span><CalendarDays :size="12"/></div><div class="app-book">Book again <ArrowRight :size="12"/></div></div>
+        <div class="app-body"><small>{{ business }}</small><strong>A moment<br>for yourself.</strong><div class="app-choice"><span>Cut & styling</span><ArrowUpRight :size="12"/></div><div class="app-choice"><span>Your appointments</span><CalendarDays :size="12"/></div><div class="app-book">{{ demoPhase >= 2 ? 'Appointment booked' : 'Book again' }} <Check v-if="demoPhase >= 2" :size="12"/><ArrowRight v-else :size="12"/></div></div>
       </div>
-      <div class="app-badge ui-confirm"><CalendarDays :size="18"/><span>Your next visit,<br>one tap away.</span></div>
+      <div class="app-badge demo-confirm" :class="{ 'is-confirmed': demoPhase >= 2 }"><CalendarDays :size="18"/><span>Your next visit,<br>one tap away.</span></div>
     </template>
 
     <template v-else-if="website">
@@ -87,7 +96,7 @@ onUnmounted(() => { observer?.disconnect(); document.removeEventListener('visibi
         <div v-if="item.visual === 'hotel'" class="site-footer"><span>Check in <strong>12 Nov</strong></span><span>Check out <strong>15 Nov</strong></span><span class="mini-dark">Find a room</span></div>
         <div v-else class="site-footer"><span>{{ item.visual === 'cars' ? 'Find your fit' : 'Made for you' }}</span><span>Explore <ArrowRight :size="11"/></span></div>
       </div>
-      <div class="website-note ui-confirm"><Check :size="13"/> {{ item.visual === 'food' ? 'Order received' : item.visual === 'hotel' ? 'Direct booking' : item.visual === 'cars' ? 'Enquiry received' : 'Your business, online' }}</div>
+      <div class="website-note demo-confirm" :class="{ 'is-confirmed': demoPhase === 3 }"><Check :size="13"/> {{ item.visual === 'food' ? 'Order received' : item.visual === 'hotel' ? 'Direct booking' : item.visual === 'cars' ? 'Enquiry received' : 'Your business, online' }}</div>
     </template>
 
     <template v-else-if="item.visual === 'sms'">
@@ -104,23 +113,27 @@ onUnmounted(() => { observer?.disconnect(); document.removeEventListener('visibi
     </template>
 
     <template v-else-if="item.visual === 'pos'">
-      <div class="ui-window pos-window"><div class="ui-title"><span>{{ item.id === 'restaurant-pos' ? 'Counter & kitchen' : 'Point of sale' }}</span><CreditCard :size="16"/></div><div class="pos-line"><span class="pos-item-icon"><ShoppingBag :size="19"/></span><div><strong>{{ item.id === 'restaurant-pos' ? 'Table order' : 'In-store purchase' }}</strong><small>2 items</small></div><span>Ready</span></div><div class="pos-rule"></div><div ref="syncContainer" class="pos-sync-diagram"><AnimatedBeam :container="syncContainer" :from="syncFrom" :to="syncTo" :active="animate" :duration="3"/><span ref="syncFrom" class="sync-node"><ShoppingBag :size="23"/></span><small>{{ item.id === 'restaurant-pos' ? 'Kitchen connected' : 'Stock in sync' }}</small><span ref="syncTo" class="sync-node"><RefreshCw :size="23" class="sync-mark"/></span></div><div class="pos-pay"><Check :size="15"/> Sale completed</div></div><div class="floating-note pos-note ui-confirm"><Check :size="15"/><strong>{{ item.id === 'restaurant-pos' ? 'Sent to the kitchen' : 'Inventory updated' }}</strong></div>
+      <div class="ui-window pos-window"><div class="ui-title"><span>{{ item.id === 'restaurant-pos' ? 'Counter & kitchen' : 'Point of sale' }}</span><CreditCard :size="16"/></div><div class="pos-line"><span class="pos-item-icon"><ShoppingBag :size="19"/></span><div><strong>{{ item.id === 'restaurant-pos' ? 'Table order' : 'In-store purchase' }}</strong><small>2 items</small></div><span>{{ demoPhase >= 2 ? 'Paid' : 'Ready' }}</span></div><div class="pos-rule"></div><div ref="syncContainer" class="pos-sync-diagram"><AnimatedBeam :container="syncContainer" :from="syncFrom" :to="syncTo" :active="animate" :duration="3"/><span ref="syncFrom" class="sync-node"><ShoppingBag :size="23"/></span><small>{{ item.id === 'restaurant-pos' ? 'Kitchen connected' : 'Stock in sync' }}</small><span ref="syncTo" class="sync-node"><RefreshCw :size="23" class="sync-mark"/></span></div><div class="pos-pay"><Check :size="15"/> {{ demoPhase >= 2 ? 'Sale completed' : 'Processing sale' }}</div></div><div class="floating-note pos-note demo-confirm" :class="{ 'is-confirmed': demoPhase === 3 }"><Check :size="15"/><strong>{{ item.id === 'restaurant-pos' ? 'Sent to the kitchen' : 'Inventory updated' }}</strong></div>
     </template>
 
     <template v-else-if="item.visual === 'qr'">
-      <div class="qr-stand"><small>Welcome to your table</small><QrCode :size="88" :stroke-width="1.2"/><strong>Scan. Order. Enjoy.</strong><span>Table 04</span></div><div class="floating-note qr-note ui-confirm"><Check :size="15"/><div><strong>Your order is in.</strong><small>Straight to the kitchen.</small></div></div>
+      <div class="qr-stand"><div class="qr-scan-line"></div><small>Welcome to your table</small><QrCode :size="88" :stroke-width="1.2"/><strong>Scan. Order. Enjoy.</strong><span>Table 04</span></div><div class="floating-note qr-note demo-confirm" :class="{ 'is-confirmed': demoPhase >= 2 }"><Check :size="15"/><div><strong>Your order is in.</strong><small>Straight to the kitchen.</small></div></div>
     </template>
 
     <template v-else-if="item.visual === 'channels'">
-      <div class="ui-window channels-window"><div class="ui-title"><span>One view. Every room.</span><RefreshCw :size="15" class="sync-mark"/></div><div class="channel-head"><span>Channel</span><span>Rooms & rates</span></div><div v-for="channel in ['Your website','Booking channels','Front desk']" :key="channel" class="channel-row"><span><Building2 :size="14"/>{{channel}}</span><small><Check :size="12"/> In sync</small></div><div class="channel-footer">Connected with SaaSBeds</div></div>
+      <div class="ui-window channels-window"><div class="ui-title"><span>One view. Every room.</span><RefreshCw :size="15" class="sync-mark"/></div><div class="channel-head"><span>Channel</span><span>Rooms & rates</span></div><div v-for="channel in ['Your website','Booking channels','Front desk']" :key="channel" class="channel-row"><span><Building2 :size="14"/>{{channel}}</span><small><Check :size="12"/>{{ demoPhase > 0 ? 'In sync' : 'Syncing' }}</small></div><div class="channel-footer">Connected with SaaSBeds</div></div>
     </template>
 
     <template v-else-if="item.visual === 'chat' || item.visual === 'whatsapp'">
-      <div class="ui-window chat-window"><div class="ui-title"><span><MessageCircle :size="16"/>{{ item.visual === 'chat' ? 'Your front desk' : 'Customer conversations' }}</span><span class="online-dot"></span></div><div class="chat-question">{{ item.visual === 'chat' ? 'How can I book a stay?' : 'Hi! Can you tell me more?' }}</div><div class="chat-answer">{{ item.visual === 'chat' ? 'Of course. Choose your dates to explore rooms and book directly.' : 'Absolutely. Let us help you find the right fit for your business.' }}</div><div class="chat-input">Write a message <ArrowRight :size="14"/></div></div>
+      <div class="ui-window chat-window"><div class="ui-title"><span><MessageCircle :size="16"/>{{ item.visual === 'chat' ? 'Your front desk' : 'Customer conversations' }}</span><span class="online-dot"></span></div><div class="chat-question">{{ item.visual === 'chat' ? 'How can I book a stay?' : 'Hi! Can you tell me more?' }}</div><div class="chat-answer" :class="{ 'answer-ready': demoPhase >= 2 }"><span v-if="demoPhase < 2" class="demo-typing"><i></i><i></i><i></i></span><span v-else>{{ item.visual === 'chat' ? 'Of course. Choose your dates to explore rooms and book directly.' : 'Absolutely. Let us help you find the right fit for your business.' }}</span></div><div class="chat-input">Write a message <ArrowRight :size="14"/></div></div>
     </template>
 
     <template v-else-if="item.visual === 'crm' || item.visual === 'leads'">
-      <div class="ui-window crm-window"><div class="ui-title"><span>{{ item.visual === 'leads' ? 'Every lead, a next step.' : 'Your relationships, together.' }}</span><Link2 :size="15"/></div><div class="pipeline"><div><small>New</small><div class="pipeline-lead moving-lead"><span class="lead-source">Website enquiry</span><strong>{{ business }}</strong><span>Start a conversation <ArrowUpRight :size="11"/></span></div></div><div><small>In conversation</small><div class="pipeline-lead"><span class="lead-source">Follow-up</span><strong>A new connection</strong><span><Clock :size="11"/> Next step ready</span></div></div></div><div class="crm-footer"><span></span>People first. Details in one place.</div></div>
+      <div class="ui-window crm-window"><div class="ui-title"><span>{{ item.visual === 'leads' ? 'Every lead, a next step.' : 'Your relationships, together.' }}</span><Link2 :size="15"/></div>
+        <div class="demo-pipeline"><div class="demo-pipeline-head"><span>New enquiry</span><span>In conversation</span></div>
+          <div class="demo-pipeline-lanes"><div></div><div></div></div>
+          <div class="demo-lead" :class="{ 'demo-lead-progressed': demoPhase >= 2 }"><span class="lead-source">Website enquiry</span><strong>{{ business }}</strong><span><Check v-if="demoPhase >= 2" :size="12"/><MessageCircle v-else :size="12"/>{{ demoPhase >= 2 ? 'Follow-up sent' : 'New message' }}</span></div>
+        </div><div class="crm-footer"><span></span>{{ demoPhase >= 2 ? 'Conversation started. Next step ready.' : 'A new enquiry, ready for your team.' }}</div></div>
     </template>
 
     <template v-else-if="item.visual === 'branches'">
@@ -129,21 +142,15 @@ onUnmounted(() => { observer?.disconnect(); document.removeEventListener('visibi
     </template>
 
     <template v-else-if="item.visual === 'hosting'">
-      <div class="ui-window hosting-window"><div class="ui-title"><span><Server :size="17"/> A home for your website</span></div><div v-for="(row, i) in [['Hosting','Connected'],['Updates','Managed'],['Support','Here to help']]" :key="row[0]" class="hosting-row"><span>{{row[0]}}</span><small><Check :size="12"/>{{row[1]}}</small></div><div class="hosting-footer"><ShieldCheck :size="18"/><span>You run your business.<br>We'll handle the upkeep.</span></div></div>
+      <div class="ui-window hosting-window"><div class="ui-title"><span><Server :size="17"/> A home for your website</span></div><div v-for="(row, i) in [['Hosting','Connected'],['Updates','Managed'],['Support','Here to help']]" :key="row[0]" class="hosting-row"><span>{{row[0]}}</span><small><Check :size="12"/>{{row[1]}}</small></div><div class="hosting-activity"><div><span>Response activity</span><small>Demo</small></div><svg viewBox="0 0 240 58" fill="none"><path d="M0 46H240 M0 24H240" stroke="#dce5ef" stroke-width="1"/><path d="M0 42L18 40L36 43L54 28L72 33L90 30L108 36L126 18L144 24L162 21L180 29L198 16L216 22L240 12" stroke="#2876d5" stroke-width="2" stroke-linecap="round"/><circle :cx="[54,108,162,216][demoPhase]" :cy="[28,36,21,22][demoPhase]" r="4" fill="#2876d5" stroke="white" stroke-width="2"/></svg></div><div class="hosting-footer"><ShieldCheck :size="18"/><span>You run your business.<br>We'll handle the upkeep.</span></div></div>
     </template>
   </div>
 </template>
 
 <style scoped>
-.product-preview { position:relative; isolation:isolate; aspect-ratio:.94; overflow:hidden; border-radius:12px; container-type:inline-size; color:#28302f; font-size:clamp(10px,3cqw,13px); background:#e1e1e1; }
-.tone-rose { background:radial-gradient(ellipse at 10% 10%,#f0e6e1,transparent 60%),linear-gradient(140deg,#dbdbdb,#bebebe 58%,#e7d8d4); }
-.tone-sage { background:radial-gradient(ellipse at 85% 85%,#e5d5d8,transparent 58%),linear-gradient(135deg,#98b0a9,#b7c1b5 55%,#cccab4); }
-.tone-sand { background:radial-gradient(ellipse at 15% 5%,#e5d8bf,transparent 65%),linear-gradient(140deg,#b6ac94,#c6bba1 55%,#9a927c); }
-.tone-peach { background:radial-gradient(ellipse at 80% 15%,#eee2d0,transparent 60%),linear-gradient(145deg,#e6cbc3,#c9b7bb 60%,#bcbcbc); }
-.tone-stone { background:radial-gradient(ellipse at 15% 80%,#e4e4d9,transparent 65%),linear-gradient(135deg,#c6c6c6,#b8b8b8 60%,#dddddd); }
-.tone-mint { background:radial-gradient(ellipse at 85% 80%,#e0deca,transparent 60%),linear-gradient(130deg,#afc9b7,#cadacf 65%,#a6beb9); }
-.preview-brand { position:absolute; left:6%; top:5%; right:6%; display:flex; align-items:center; justify-content:space-between; z-index:2; font-size:3.8cqw; font-weight:600; letter-spacing:-.02em; color:#383838; }
-.preview-brand>span { font-size:3cqw; font-weight:500; padding:1cqw 2cqw; border-radius:30px; background:#ffffffa6; }
+.product-preview { position:relative; isolation:isolate; aspect-ratio:.94; overflow:hidden; border-radius:12px; container-type:inline-size; color:#28302f; font-size:clamp(10px,3cqw,13px); background:#eef5fc; }
+.preview-brand { position:absolute; left:6%; top:5%; right:6%; display:flex; align-items:center; justify-content:space-between; z-index:2; font-size:3.8cqw; font-weight:600; letter-spacing:-.02em; color:#172135; }
+.preview-brand>span { font-size:3cqw; font-weight:500; padding:1cqw 2cqw; border-radius:30px; background:#ffffff80; color:#172135; border:1px solid #ffffff30; }
 .ui-window { position:absolute; background:#fbfbf8; border-radius:10px; box-shadow:0 4cqw 7cqw -3cqw #3d3d3d4d; overflow:hidden; font-size:3cqw; }
 .ui-window-bar { display:flex; gap:1cqw; align-items:center; height:7cqw; padding:0 3.5cqw; border-bottom:1px solid #e6e7e4; color:#787878; font-size:2.1cqw; }
 .ui-window-bar i { width:1cqw; height:1cqw; border-radius:50%; background:#ccd0cd; }
@@ -209,7 +216,7 @@ onUnmounted(() => { observer?.disconnect(); document.removeEventListener('visibi
 .app-choice,.app-book { font-size:3.2cqw; padding-block:3cqw; }
 .app-badge { top:auto; bottom:14%; right:3%; font-size:3.5cqw; }
 .sms-live-stack { position:absolute; left:4%; right:4%; top:17%; }
-.activity-caption { display:flex; align-items:center; gap:2cqw; font-size:3.5cqw; font-weight:600; margin:0 2cqw 4cqw; }
+.activity-caption { color:#172135; display:flex; align-items:center; gap:2cqw; font-size:3.5cqw; font-weight:600; margin:0 2cqw 4cqw; }
 .live-notification { background:#faf9f5; padding:5cqw; border-radius:12px; box-shadow:0 3cqw 6cqw -3cqw #49362e44; }
 .notification-top { display:flex; align-items:center; gap:2cqw; }
 .notification-symbol { display:grid; place-items:center; width:7cqw; height:7cqw; border-radius:50%; background:#e6e8de; color:#58624b; }
@@ -230,4 +237,23 @@ onUnmounted(() => { observer?.disconnect(); document.removeEventListener('visibi
 .channels-window .ui-title,.hosting-window .ui-title { font-size:3.8cqw; }.channel-row { padding-block:5cqw; }.channel-row>span { font-size:3.2cqw; }.channel-row small { font-size:2.8cqw; }
 .chat-window .ui-title { font-size:3.7cqw; }.chat-question,.chat-answer { font-size:4cqw; padding:4cqw; }.chat-input { font-size:3cqw; }
 .crm-window .ui-title { font-size:3.7cqw; }.pipeline { margin-top:7cqw; }.pipeline-lead { padding-block:6cqw; }.pipeline-lead>strong { font-size:3.7cqw; }.pipeline-lead>span:last-child { font-size:2.5cqw; }.lead-source { font-size:2.5cqw; }.crm-footer { font-size:2.7cqw; margin-top:7cqw; }
+
+/* Product demonstration sequences share one clock and pause outside the viewport. */
+.demo-confirm { opacity:0; transform:translateY(8px) scale(.97); transition:opacity 250ms var(--hero-ease-out),transform 250ms var(--hero-ease-out); }
+.demo-confirm.is-confirmed { opacity:1; transform:translateY(0) scale(1); }
+.calendar-week span,.booking-times span { transition:background-color 200ms ease,color 200ms ease; }
+.demo-pipeline { position:relative; margin-top:7cqw; height:49cqw; }
+.demo-pipeline-head { display:grid; grid-template-columns:1fr 1fr; gap:3cqw; font-size:3cqw; padding-bottom:3cqw; color:#596674; }
+.demo-pipeline-lanes { position:absolute; inset:7cqw 0 0; display:grid; grid-template-columns:1fr 1fr; gap:3cqw; }
+.demo-pipeline-lanes>div { border-radius:7px; background:#eaf0f7; border:1px solid #dce5ef; }
+.demo-lead { position:absolute; top:11cqw; left:2%; width:44%; padding:4cqw 2.5cqw; border-radius:7px; background:#fff; box-shadow:0 2cqw 5cqw #17213512; transition:transform 500ms var(--hero-ease-out); }
+.demo-lead-progressed { transform:translateX(118%); }
+.demo-lead strong { display:block; margin:3cqw 0; font-size:3.7cqw; line-height:1.35; }
+.demo-lead>span:last-child { display:flex; align-items:center; gap:1cqw; font-size:2.5cqw; color:#45644f; }
+.qr-scan-line { position:absolute; top:23%; left:14%; right:14%; height:2px; background:#3987ec; box-shadow:0 0 12px #3987ecaa; animation:qr-scan 7.2s var(--hero-ease-out) infinite; animation-play-state:paused; }
+.preview-awake .qr-scan-line { animation-play-state:running; }
+@keyframes qr-scan { 0%,10% { opacity:0; transform:translateY(0); } 20% { opacity:1; } 55% { opacity:1; transform:translateY(30cqw); } 65%,100% { opacity:0; transform:translateY(30cqw); } }
+@media(prefers-reduced-motion:reduce) { .demo-confirm,.demo-lead,.calendar-week span,.booking-times span { transition:none; }.qr-scan-line { display:none; } }
+.hosting-activity { margin-top:4cqw; }.hosting-activity>div { display:flex; justify-content:space-between; font-size:2.7cqw; color:#526078; }.hosting-activity small { font-size:2.4cqw; }.hosting-activity svg { width:100%; height:auto; margin-top:2cqw; }
+.chat-answer { animation:none; min-height:26cqw; display:flex; align-items:center; }.demo-typing { display:flex; align-items:center; gap:1.4cqw; }.demo-typing i { width:1.5cqw; height:1.5cqw; border-radius:50%; background:#687d92; animation:demo-type 1.2s ease infinite; animation-play-state:paused; }.demo-typing i:nth-child(2) { animation-delay:120ms; }.demo-typing i:nth-child(3) { animation-delay:200ms; }.preview-awake .demo-typing i { animation-play-state:running; }@keyframes demo-type { 0%,80%,100% { opacity:.4; transform:translateY(0); } 40% { opacity:1; transform:translateY(-2px); } }
 </style>

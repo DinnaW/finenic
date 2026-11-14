@@ -5,8 +5,8 @@ import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { Globe2 } from 'lucide-vue-next'
 const props = defineProps({ active: Boolean })
 const canvas = ref(null), ready = ref(false)
-let globe, observer, width = 0, phi = 1.8, last = 0
-function setActive() { globe?.toggle(props.active) }
+let globe, observer, width = 0, phi = 1.8, last = 0, textureWarmup
+function setActive() { globe?.toggle(props.active || Boolean(textureWarmup)) }
 watch(() => props.active, setActive)
 onMounted(() => {
   const el = canvas.value
@@ -17,7 +17,7 @@ onMounted(() => {
     globe = createGlobe(el, {
       width: width * ratio, height: width * ratio, devicePixelRatio: ratio,
       phi, theta: .22, dark: 0, diffuse: 1.1, mapSamples: 12000, mapBrightness: 3,
-      baseColor: [.84,.82,.78], markerColor: [.23,.25,.20], glowColor: [.92,.90,.86],
+      baseColor: [.38,.58,.86], markerColor: [.08,.22,.60], glowColor: [.76,.88,1],
       markers: [{ location:[6.9271,79.8612],size:.08 },{location:[51.5074,-.1278],size:.05},{location:[1.3521,103.8198],size:.05}],
       onRender(state) {
         const now = performance.now()
@@ -27,12 +27,15 @@ onMounted(() => {
       },
     })
     ready.value = true
+    // Cobe uploads its embedded map asynchronously; render through that upload
+    // even when reduced motion/offscreen means rotation is disabled.
+    textureWarmup = setTimeout(() => { textureWarmup = null; globe?.render(); setActive() }, 800)
     globe.render(); setActive()
     observer = new ResizeObserver(() => { width = el.clientWidth; if(!props.active) globe.render() })
     observer.observe(el)
   } catch { ready.value = false }
 })
-onUnmounted(() => { observer?.disconnect(); globe?.destroy() })
+onUnmounted(() => { clearTimeout(textureWarmup); observer?.disconnect(); globe?.destroy() })
 </script>
 
 <template><div class="live-globe"><Globe2 v-if="!ready" class="globe-fallback" :stroke-width=".6"/><canvas ref="canvas" :style="{ opacity: ready ? 1 : 0 }" /></div></template>

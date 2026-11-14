@@ -1,0 +1,12 @@
+﻿/* Shared action feedback; keyboard and reduced-motion interactions remain immediate. */
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
+  .site-shell :is(.statement-links a,.statement-links button,.story-explore,.services-footer a,.services-plans,.product-action)>svg:last-child {
+    transition:transform 180ms var(--hero-ease-out);
+  }
+  .site-shell :is(.statement-links a,.statement-links button,.story-explore,.services-footer a,.services-plans,.product-action):hover:not(:focus-visible)>svg:last-child {
+    transform:translate(2px,-2px);
+  }
+  .site-shell :is(.services-footer a):hover:not(:focus-visible)>svg:last-child { transform:translateX(3px); }
+  .site-shell .services-plans { transition:transform 140ms var(--hero-ease-out),background-color 160ms ease; }
+  .site-shell .services-plans:active:not(:focus-visible) { transform:scale(.97); }
+}

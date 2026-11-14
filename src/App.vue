@@ -2,16 +2,23 @@
 import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 import { ArrowUpRight, ArrowRight, ChevronDown, Search, Globe2, Menu, X, Server, Mail, LifeBuoy, BookOpen } from 'lucide-vue-next'
 import { domainSuggestions } from './domain'
-import PrismSteps from './components/PrismSteps.vue'
+import GradientBarHero from './components/ui/GradientBarHero.vue'
+import AvatarPill from './components/ui/AvatarPill.vue'
 import DomainStory from './components/DomainStory.vue'
 import BusinessServices from './components/BusinessServices.vue'
 import IndustryShowcase from './components/IndustryShowcase.vue'
 import PremiumButton from './components/PremiumButton.vue'
-import GradientBackdrop from './components/GradientBackdrop.vue'
-import { motion } from 'motion-v'
+import './gradient-hero.css'
+import './typography.css'
+import './site-motion.css'
+import { useSiteMotion } from './useSiteMotion'
+import { usePageScrollMotion } from './usePageScrollMotion'
+const siteRoot = ref(null)
+useSiteMotion(siteRoot)
+usePageScrollMotion(siteRoot)
 const reducedMotion = ref(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
-// Light theme is retained for later, but is currently unavailable to visitors.
-const theme = ref('dark')
+// The supplied gradient-bar design uses a white header and hero.
+const theme = ref('light')
 function applyTheme() {
  document.documentElement.dataset.theme = theme.value
  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme.value === 'light' ? '#fafaf8' : '#030303')
@@ -19,6 +26,7 @@ function applyTheme() {
 applyTheme()
 const baseUrl = import.meta.env.BASE_URL
 const query = ref('')
+const heroInteracted = ref(false)
 const input = ref(null)
 const error = ref('')
 const results = ref([])
@@ -47,7 +55,7 @@ onUnmounted(()=>document.removeEventListener('keydown',escape))
 </script>
 
 <template>
- <div class="site-shell" @click="activeMenu=null">
+ <div ref="siteRoot" class="site-shell site-shell--gradient-hero" @click="activeMenu=null">
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="header-wrap">
    <div class="header-inner flex items-center justify-between">
@@ -60,19 +68,21 @@ onUnmounted(()=>document.removeEventListener('keydown',escape))
       </div>
      </div>
     </nav>
-    <div class="header-actions flex items-center"><button class="contact-button" @click.stop="selectItem({title:'Help & support'})">Let?s talk <ArrowUpRight :size="14"/></button><PremiumButton variant="header" @click="focusSearch">Get started<template #icon><ArrowUpRight :size="15"/></template></PremiumButton><button class="mobile-toggle" aria-label="Toggle navigation" :aria-expanded="mobileOpen" aria-controls="mobile-nav" @click="mobileOpen=!mobileOpen"><X v-if="mobileOpen" :size="22"/><Menu v-else :size="22"/></button></div>
+    <div class="header-actions flex items-center"><button class="contact-button" @click.stop="selectItem({title:'Help & support'})">Let’s talk <ArrowUpRight :size="14"/></button><PremiumButton variant="header" @click="focusSearch">Get started<template #icon><ArrowUpRight :size="15"/></template></PremiumButton><button class="mobile-toggle" aria-label="Toggle navigation" :aria-expanded="mobileOpen" aria-controls="mobile-nav" @click="mobileOpen=!mobileOpen"><X v-if="mobileOpen" :size="22"/><Menu v-else :size="22"/></button></div>
    </div>
    <nav v-if="mobileOpen" id="mobile-nav" class="mobile-nav" aria-label="Mobile navigation"><div v-for="(items,name) in menuItems" :key="name"><p>{{name}}</p><button v-for="item in items" :key="item.title" @click="selectItem(item)">{{item.title}}<ArrowUpRight :size="16"/></button></div></nav>
   </header>
 
   <main id="main">
    <section class="hero relative" aria-labelledby="hero-title">
-    <GradientBackdrop v-if="theme === 'light'" :reduced="reducedMotion" />
-    <PrismSteps v-else :reduced="reducedMotion" />
-    <motion.div class="hero-content relative mx-auto text-center" :initial="reducedMotion ? false : { opacity: 0.5, y: 16 }" :animate="{ opacity: 1, y: 0 }" :transition="{ duration: reducedMotion ? 0 : 1, ease: [0.16,1,0.3,1] }">
-     <h1 id="hero-title">Built for your next big idea.<br>Starting with your domain.</h1>
+    <GradientBarHero :reduced="reducedMotion" />
+    <div class="hero-content relative mx-auto text-center">
+     <AvatarPill />
+     <div class="hero-introduction">
+     <h1 id="hero-title">Built for your next big idea.<br> Starting with your domain.</h1>
      <p class="hero-description">Find your name. Build your website. Make it yours.</p>
-     <div class="domain-area mx-auto">
+     </div>
+     <div class="domain-area mx-auto" :class="{ 'is-engaged': heroInteracted }" @focusin="heroInteracted = true">
       <form class="domain-search flex items-center" :class="{'has-error':error}" @submit.prevent="searchDomains" role="search" aria-label="Domain search">
        <Globe2 class="search-globe shrink-0" :size="23" stroke-width="1.5" aria-hidden="true"/>
        <label for="domain" class="sr-only">Find your domain name</label><input id="domain" ref="input" v-model.trim="query" autocomplete="off" autocapitalize="none" spellcheck="false" type="text" placeholder="Find your perfect domain" :aria-invalid="!!error" :aria-describedby="error?'domain-error':'domain-hint'" @input="error=''"/>
@@ -84,9 +94,9 @@ onUnmounted(()=>document.removeEventListener('keydown',escape))
      <section v-if="results.length" ref="resultSection" class="search-results text-left" aria-label="Domain suggestions" aria-live="polite"><div class="result-header"><div><h2>A name for your next chapter</h2><p>Search preview ? Live availability and pricing aren?t connected.</p></div><button class="icon-button" aria-label="Close domain suggestions" @click="results=[];input?.focus()"><X :size="18"/></button></div><div v-for="(domain,i) in results" :key="domain" class="domain-result"><div><strong>{{domain}}</strong><span v-if="i===0" class="match-label">Your search</span></div><a :href="`https://lookup.icann.org/en/lookup?name=${encodeURIComponent(domain)}`" target="_blank" rel="noopener noreferrer">Look up <ArrowUpRight :size="15"/><span class="sr-only">{{domain}} on ICANN, opens in a new tab</span></a></div><p class="result-note">ICANN lookup shows registration records; it does not reserve a domain.</p></section>
      <section v-if="product" ref="productSection" class="product-panel text-left" aria-live="polite"><div class="result-header"><h2>{{product}}</h2><button class="icon-button" aria-label="Close details" @click="product=null"><X :size="18"/></button></div><template v-if="product==='Getting started'"><p>Start with a name that?s short, memorable, and easy to spell. Then choose a hosting plan for the website you want to build.</p><button class="text-link" @click="focusSearch">Find your domain <ArrowRight :size="16"/></button></template><template v-else-if="product==='Help & support'"><p>Finenic is taking shape. Support and contact options will be added as the website launches.</p></template><template v-else><p>{{product==='Business email'?'Bring your brand to every conversation with an email address at your own domain.':'Give your website a home with room for your ideas to grow.'}}</p><p class="panel-note">Plans and pricing are coming soon.</p><button class="text-link" @click="focusSearch">Start with your domain <ArrowRight :size="16"/></button></template></section>
      <button class="explore-link flex items-center justify-center" @click="selectItem({title:'Web hosting'})">Explore hosting <ArrowUpRight :size="15"/></button>
-    </motion.div>
+    </div>
    </section>
-   <DomainStory />
+   <DomainStory @search-domain="focusSearch" />
    <BusinessServices />
    <IndustryShowcase @search-domain="focusSearch" />
   </main>
