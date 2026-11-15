@@ -14,24 +14,25 @@ const ribs = Array.from({ length: 18 }, (_, index) => ({
 
 <style scoped>
 .glass-bar-backdrop {
-  --glass-scene:radial-gradient(ellipse at 24% 78%,#1860d9 0%,#287beccc 18%,transparent 43%),radial-gradient(ellipse at 85% 49%,#d9f2ff 0%,#94d2ffcc 25%,transparent 48%),radial-gradient(ellipse at 75% 105%,#1553cc 0%,transparent 48%),linear-gradient(155deg,#edf8ff 4%,#acd8ff 38%,#4d9af1 76%,#2463d2);
+  --glass-scene:radial-gradient(ellipse at 18% 96%,#b3e0f5f2 0%,#d0edfad9 25%,transparent 56%),radial-gradient(ellipse at 94% 72%,#c0e8f7eb 0%,#e1f4fccc 31%,transparent 62%),radial-gradient(ellipse at 53% 22%,#fff 0%,#ffffffd9 30%,transparent 73%),linear-gradient(155deg,#fff 8%,#f4fbff 42%,#e1f2fc 75%,#c5e7f8);
   position:absolute; inset:0; z-index:-1; display:flex; pointer-events:none; overflow:hidden; border-radius:inherit; background-image:var(--glass-scene);
 }
 .glass-bar-backdrop span {
   position:relative; flex:1 1 0; min-width:0; height:100%;
   background-image:var(--glass-scene); background-size:1800% 100%; background-position:var(--rib-position) 0;
+  filter:blur(3px); opacity:.92;
 }
 .glass-bar-backdrop span::after {
   content:''; position:absolute; inset:0;
-  background:linear-gradient(90deg,#063c9b33 0%,#ffffff05 14%,#ffffff03 38%,#ffffff40 71%,#ffffffb3 86%,#ffffff40 91%,#0750a64d 100%);
-  box-shadow:inset -1px 0 0 #ffffffa6,inset 1px 0 2px #124d9226;
+  background:linear-gradient(90deg,#a5d6eb1f 0%,#ffffff26 18%,#ffffff08 42%,#ffffff70 74%,#ffffffbd 87%,#ffffff52 94%,#92c9e126 100%);
+  box-shadow:inset -1px 0 2px #ffffffb3,inset 1px 0 3px #a6d3e61a;
 }
-.glass-bar-backdrop::before { content:''; position:absolute; inset:0; z-index:1; background:linear-gradient(125deg,transparent 24%,#ffffff05 36%,#ffffff40 39%,#ffffff08 42%,transparent 55%); pointer-events:none; }
+.glass-bar-backdrop::before { content:''; position:absolute; inset:-8%; z-index:1; background:radial-gradient(ellipse at 35% 24%,#ffffff80 0%,#ffffff33 28%,transparent 65%); filter:blur(22px); pointer-events:none; }
 .glass-bar-backdrop::after {
   content:''; position:absolute; inset:0; border-radius:inherit;
-  background:linear-gradient(180deg,#f0f9ffb3 0%,#e3f3ff33 24%,transparent 48%,#c4e5ff1a 100%);
+  background:linear-gradient(180deg,#ffffff73 0%,#ffffff26 32%,#ffffff0d 65%,#eef7ff26 100%);
   box-shadow:inset 0 1px 0 #ffffffa6,inset 0 0 0 1px #ffffff40;
 }
-.glass-variant-sage,.glass-variant-mint { --glass-scene:radial-gradient(ellipse at 80% 85%,#1b64df 0%,transparent 49%),radial-gradient(ellipse at 15% 50%,#d9f3ff 0%,#91d0ffb3 25%,transparent 53%),linear-gradient(145deg,#e8f6ff 4%,#9dd0ff 40%,#488fe8 76%,#2463d2); }
-.glass-variant-sand,.glass-variant-stone { --glass-scene:radial-gradient(ellipse at 10% 88%,#1a5ed5 0%,transparent 45%),radial-gradient(ellipse at 70% 38%,#e2f4ff 0%,#a9dbffcc 24%,transparent 52%),linear-gradient(160deg,#eaf7ff 5%,#acd8ff 40%,#4d9af1 76%,#2463d2); }
+.glass-variant-sage,.glass-variant-mint { --glass-scene:radial-gradient(ellipse at 86% 95%,#b8e2f5f2 0%,transparent 57%),radial-gradient(ellipse at 12% 72%,#d8f0fbe6 0%,transparent 60%),radial-gradient(ellipse at 48% 28%,#fff 0%,#ffffffd9 28%,transparent 70%),linear-gradient(145deg,#fff 8%,#f5fbff 42%,#e3f3fc 77%,#cceafa); }
+.glass-variant-sand,.glass-variant-stone { --glass-scene:radial-gradient(ellipse at 8% 100%,#b4dff3f2 0%,transparent 56%),radial-gradient(ellipse at 90% 70%,#dbf1fce6 0%,transparent 58%),radial-gradient(ellipse at 57% 25%,#fff 0%,#ffffffe6 30%,transparent 72%),linear-gradient(160deg,#fff 8%,#f5fcff 42%,#e5f4fc 78%,#c8e8f8); }
 </style>

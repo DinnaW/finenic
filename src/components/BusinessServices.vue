@@ -6,6 +6,12 @@ const base = import.meta.env.BASE_URL
 const notice = ref('')
 const destinations = { start:import.meta.env.VITE_SIGNUP_URL, plans:import.meta.env.VITE_PLANS_URL }
 function act(type) {
+ if(type==='plans'&&!destinations.plans) {
+  const heading=document.querySelector('#pricing-heading')
+  heading?.focus({preventScroll:true})
+  heading?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth',block:'start'})
+  return
+ }
  if(destinations[type]) window.location.assign(destinations[type])
  else notice.value=type==='start'?'Free signup is coming soon.':'Plans and pricing are coming soon.'
 }

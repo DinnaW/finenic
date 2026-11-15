@@ -9,6 +9,7 @@ import BusinessServices from './components/BusinessServices.vue'
 import IndustryShowcase from './components/IndustryShowcase.vue'
 import BusinessJourney from './components/BusinessJourney.vue'
 import SiteFooter from './components/SiteFooter.vue'
+import PricingSection from './components/PricingSection.vue'
 const industryShowcase = ref(null)
 import PremiumButton from './components/PremiumButton.vue'
 import './gradient-hero.css'
@@ -35,6 +36,10 @@ const error = ref('')
 const results = ref([])
 const activeMenu = ref(null)
 const mobileOpen = ref(false)
+const headerScrolled = ref(false)
+function updateHeaderScroll() { headerScrolled.value = window.scrollY > 16 }
+onMounted(() => { updateHeaderScroll(); window.addEventListener('scroll', updateHeaderScroll, { passive:true }) })
+onUnmounted(() => window.removeEventListener('scroll', updateHeaderScroll))
 const resultSection = ref(null)
 const product = ref(null)
 const productSection = ref(null)
@@ -60,7 +65,7 @@ onUnmounted(()=>document.removeEventListener('keydown',escape))
 <template>
  <div ref="siteRoot" class="site-shell site-shell--gradient-hero" @click="activeMenu=null">
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="header-wrap">
+  <header class="header-wrap" :class="{ 'is-scrolled': headerScrolled }">
    <div class="header-inner flex items-center justify-between">
     <a class="brand flex items-center" :href="baseUrl" aria-label="finenic home"><svg class="brand-symbol" viewBox="0 0 40 40" aria-hidden="true"><ellipse cx="20" cy="20" rx="5.5" ry="18" transform="rotate(45 20 20)"/><ellipse cx="20" cy="20" rx="5.5" ry="18" transform="rotate(-45 20 20)"/><circle cx="20" cy="20" r="4" fill="white"/></svg><span>finenic<span class="brand-dot">.</span></span></a>
     <nav class="desktop-nav flex items-center" aria-label="Main navigation">
@@ -103,6 +108,7 @@ onUnmounted(()=>document.removeEventListener('keydown',escape))
    <BusinessServices />
    <IndustryShowcase ref="industryShowcase" @search-domain="focusSearch" />
    <BusinessJourney @search-domain="focusSearch" @show-messaging="industryShowcase?.showMessaging()" />
+   <PricingSection @search-domain="focusSearch" @industry="industryShowcase?.showIndustry($event)" @show-messaging="industryShowcase?.showMessaging()" @hosting="selectItem({title:'Web hosting'})" />
   </main>
   <SiteFooter @search-domain="focusSearch" @show-messaging="industryShowcase?.showMessaging()" @industry="industryShowcase?.showIndustry($event)" @support="selectItem({title:'Help & support'})" @hosting="selectItem({title:'Web hosting'})" />
  </div>

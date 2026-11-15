@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-defineProps({items:{type:Array,required:true},label:String,paused:Boolean})
+defineProps({items:{type:Array,required:true},label:String,paused:Boolean,reverse:Boolean})
 const emit=defineEmits(['activate'])
 const root=ref(null), group=ref(null), visible=ref(false), pageVisible=ref(true), width=ref(0), duration=ref(38)
 let resize, intersection
@@ -18,10 +18,10 @@ onUnmounted(()=>{resize?.disconnect();intersection?.disconnect();document.remove
 </script>
 
 <template>
- <nav ref="root" class="footer-marquee" :class="{'is-paused':paused,'is-offscreen':!visible||!pageVisible}" :aria-label="label" :style="{'--marquee-width':`${width}px`,'--marquee-duration':`${duration}s`}">
+ <nav ref="root" class="footer-marquee" :class="{'is-paused':paused,'is-offscreen':!visible||!pageVisible,'is-reversed':reverse}" :aria-label="label" :style="{'--marquee-width':`${width}px`,'--marquee-duration':`${duration}s`}">
   <div class="marquee-track">
-   <div ref="group" class="marquee-group"><button v-for="(item,index) in items" :key="item" @pointerdown.prevent @click="emit('activate',index)">{{ item }}<span aria-hidden="true">·</span></button></div>
-   <div class="marquee-group marquee-copy" aria-hidden="true"><button v-for="(item,index) in items" :key="item" tabindex="-1" @pointerdown.prevent @click="emit('activate',index)">{{ item }}<span>·</span></button></div>
+   <div ref="group" class="marquee-group"><button v-for="(item,index) in items" :key="item" @pointerdown.prevent @click="emit('activate',index)"><slot name="item" :item="item" :index="index">{{ item }}<span aria-hidden="true">·</span></slot></button></div>
+   <div class="marquee-group marquee-copy" aria-hidden="true"><button v-for="(item,index) in items" :key="item" tabindex="-1" @pointerdown.prevent @click="emit('activate',index)"><slot name="item" :item="item" :index="index">{{ item }}<span>·</span></slot></button></div>
   </div>
  </nav>
 </template>
@@ -29,6 +29,7 @@ onUnmounted(()=>{resize?.disconnect();intersection?.disconnect();document.remove
 <style scoped>
 .footer-marquee { overflow:hidden; padding:6px 0 12px; mask-image:linear-gradient(to right,#000 94%,transparent); }
 .marquee-track { display:flex; width:max-content; animation:footer-marquee var(--marquee-duration) linear infinite; }
+.is-reversed .marquee-track { animation-direction:reverse; }
 .marquee-group { display:flex; align-items:center; justify-content:space-around; flex-shrink:0; min-width:var(--marquee-width); }
 .marquee-group button { display:flex; align-items:center; gap:24px; padding-right:24px; white-space:nowrap; cursor:pointer; color:#77828d; font-size:clamp(22px,2vw,34px); line-height:1.5; letter-spacing:-.035em; }
 .marquee-group span { color:#c3cbd3; }

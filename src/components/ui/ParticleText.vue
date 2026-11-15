@@ -5,7 +5,7 @@ const props = defineProps({ text:{type:String,default:'FINENIC'}, paused:Boolean
 const container = ref(null), canvas = ref(null), ready = ref(false)
 const settings = { current: {} }, wake = { current: () => {} }
 function sync() {
- settings.current = { text:props.text, particleSize:1.65, density:4, color:'currentColor', highlightColor:'#1976d2', highlightMode:'motion', shape:'circle', intro:'gather', scatter:190, gatherDuration:4200, stagger:850, clickBurst:true, burstStrength:1, pointerRepel:42, repelRadius:120, idleDrift:.35, trigger:'mount', fontSize:'clamp(80px, 23vw, 420px)', fontWeight:600, fontFamily:'inherit', glow:true, paused:props.paused }
+ settings.current = { text:props.text, particleSize:1.65, density:4, color:'currentColor', highlightColor:'#1976d2', highlightMode:'motion', shape:'circle', intro:'gather', scatter:190, gatherDuration:2500, stagger:450, clickBurst:true, burstStrength:1, pointerRepel:42, repelRadius:120, idleDrift:.35, trigger:'mount', fontSize:'clamp(80px, 23vw, 420px)', fontWeight:600, fontFamily:'inherit', glow:true, paused:props.paused }
  wake.current()
 }
 sync()

@@ -9,7 +9,10 @@
   --hero-ease-out:cubic-bezier(.23,1,.32,1);
 }
 .site-shell--gradient-hero .header-inner { max-width:1600px; padding-inline:5vw; }
-.site-shell--gradient-hero .header-wrap { background:#fff; }
+.site-shell--gradient-hero .header-wrap { position:sticky; top:0; z-index:50; background:#fff; }
+.site-shell--gradient-hero .header-wrap.is-scrolled { background:rgba(255,255,255,.9); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); box-shadow:0 1px 0 #1721350d,0 5px 20px #17213505; }
+html { scroll-padding-top:calc(var(--header-height,96px) + 16px); }
+.site-shell--gradient-hero .mobile-nav { max-height:calc(100dvh - var(--header-height) - 20px); overflow-y:auto; }
 .site-shell--gradient-hero .brand-symbol circle { fill:#fff; }
 .site-shell--gradient-hero .hero { background:#fff; }
 .site-shell--gradient-hero .hero-content {
