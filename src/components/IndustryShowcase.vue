@@ -69,6 +69,21 @@ function getPackage() {
   if (salonPackageUrl) window.location.assign(salonPackageUrl)
   else notice.value = { id: 'package', text: 'Salon & Spa package details are coming soon.' }
 }
+async function showMessaging() {
+  await select(0)
+  const grid = track()
+  const cards = Array.from(grid?.children || [])
+  const target = cards.find(card => card.querySelector('.preview-sms'))
+  if (!target || !grid) return
+  grid.scrollLeft = target.offsetLeft - grid.offsetLeft
+  grid.scrollIntoView({ behavior: reduced.value ? 'instant' : 'smooth', block:'center' })
+  target.querySelector('.product-action')?.focus({ preventScroll:true })
+}
+async function showIndustry(index = 0) {
+  await select(index, true)
+  section.value?.scrollIntoView({ behavior: reduced.value ? 'instant' : 'smooth', block:'start' })
+}
+defineExpose({ showMessaging, showIndustry })
 </script>
 
 <template>

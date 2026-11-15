@@ -7,6 +7,9 @@ import AvatarPill from './components/ui/AvatarPill.vue'
 import DomainStory from './components/DomainStory.vue'
 import BusinessServices from './components/BusinessServices.vue'
 import IndustryShowcase from './components/IndustryShowcase.vue'
+import BusinessJourney from './components/BusinessJourney.vue'
+import SiteFooter from './components/SiteFooter.vue'
+const industryShowcase = ref(null)
 import PremiumButton from './components/PremiumButton.vue'
 import './gradient-hero.css'
 import './typography.css'
@@ -98,7 +101,9 @@ onUnmounted(()=>document.removeEventListener('keydown',escape))
    </section>
    <DomainStory @search-domain="focusSearch" />
    <BusinessServices />
-   <IndustryShowcase @search-domain="focusSearch" />
+   <IndustryShowcase ref="industryShowcase" @search-domain="focusSearch" />
+   <BusinessJourney @search-domain="focusSearch" @show-messaging="industryShowcase?.showMessaging()" />
   </main>
+  <SiteFooter @search-domain="focusSearch" @show-messaging="industryShowcase?.showMessaging()" @industry="industryShowcase?.showIndustry($event)" @support="selectItem({title:'Help & support'})" @hosting="selectItem({title:'Web hosting'})" />
  </div>
 </template>
