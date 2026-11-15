@@ -1,5 +1,13 @@
 # finenic — Prism steps revision
 
+## Finenic assistant — November 2026
+
+The current white, pale-blue and black visual language governs the assistant. Hostinger's public floating prompt bar and right-hand chat panel informed the interaction: a centered bottom pill appears only after the hero has passed the sticky header, with prompts that follow the visible section. Finenic's mark, Manrope, black primary buttons and cool white surfaces replace the reference branding. Visitors can minimize the bar, close and reopen the conversation, or start again.
+
+The desktop panel is non-modal so visitors can keep browsing; phones use a native modal sheet with focus containment and scroll locking. Reduced motion removes entrances. The component is loaded as visitors approach the end of the hero, outside the initial page bundle.
+
+This is a local product guide, not a live AI service. Replies are derived from the existing industry catalogue and explicitly distinguish sample plans and domain suggestions from live pricing or availability. No account access, external message submission or conversation storage is implemented. Recommendation actions use the existing domain search, catalogue tabs, messaging cards and pricing section. Production build and browser checks cover hero gating, navigation, empty input, retained conversations, Escape/focus return, responsive layouts, short viewports and scroll restoration.
+
 Visual authority: the user-supplied black hero screenshot with nine stepped columns and thin iridescent upper edges. This supersedes the prior Aurora direction. Preserve finenic, Manrope, Vue, Tailwind and the centered domain search.
 
 Full-width black canvas #030303; white display text #F7F7F7; secondary text #A6A6A6; dark form #141414; white search button #F5F5F5. Nine black columns descend symmetrically toward the center. Their upper edges use narrow spectral highlights, with faint vertical seams. Desktop display text 68px, weight 450, tracking -0.04em; mobile 35–52px. The form is centered at a maximum 640px. No testimonial or customer logos are invented.

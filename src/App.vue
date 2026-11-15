@@ -1,5 +1,5 @@
 <script setup>
-import { ref, nextTick, onMounted, onUnmounted } from 'vue'
+import { ref, nextTick, onMounted, onUnmounted, defineAsyncComponent } from 'vue'
 import { ArrowUpRight, ArrowRight, ChevronDown, Search, Globe2, Menu, X, Server, Mail, LifeBuoy, BookOpen } from 'lucide-vue-next'
 import { domainSuggestions } from './domain'
 import GradientBarHero from './components/ui/GradientBarHero.vue'
@@ -10,6 +10,7 @@ import IndustryShowcase from './components/IndustryShowcase.vue'
 import BusinessJourney from './components/BusinessJourney.vue'
 import SiteFooter from './components/SiteFooter.vue'
 import PricingSection from './components/PricingSection.vue'
+const FinenicAssistant = defineAsyncComponent(() => import('./components/FinenicAssistant.vue'))
 const industryShowcase = ref(null)
 import PremiumButton from './components/PremiumButton.vue'
 import './gradient-hero.css'
@@ -37,7 +38,12 @@ const results = ref([])
 const activeMenu = ref(null)
 const mobileOpen = ref(false)
 const headerScrolled = ref(false)
-function updateHeaderScroll() { headerScrolled.value = window.scrollY > 16 }
+const assistantReady = ref(false)
+function updateHeaderScroll() {
+ headerScrolled.value = window.scrollY > 16
+ // Load the guide as the visitor approaches the end of the hero.
+ if (!assistantReady.value && document.querySelector('.hero')?.getBoundingClientRect().bottom < window.innerHeight * .5) assistantReady.value = true
+}
 onMounted(() => { updateHeaderScroll(); window.addEventListener('scroll', updateHeaderScroll, { passive:true }) })
 onUnmounted(() => window.removeEventListener('scroll', updateHeaderScroll))
 const resultSection = ref(null)
@@ -56,6 +62,12 @@ async function searchDomains() {
  catch(e) {results.value=[];error.value=e.message;input.value?.focus()}
 }
 function chooseExtension(ext) {query.value=(query.value.trim().replace(/\.[a-z]+$/i,'')||'yourbigidea')+ext;focusSearch()}
+async function navigateAssistant(action) {
+ if (action.type === 'domain') { if (action.query) query.value = action.query; await focusSearch(); if (action.query) await searchDomains(); return }
+ if (action.type === 'industry') { await industryShowcase.value?.showIndustry(action.index); return }
+ if (action.type === 'messaging') { await industryShowcase.value?.showMessaging(); return }
+ if (action.type === 'pricing') { const heading = document.getElementById('pricing-heading'); heading?.focus({preventScroll:true}); heading?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'}) }
+}
 async function selectItem(item) {activeMenu.value=null;mobileOpen.value=false;if(item.title==='Find a domain'||item.title==='Domain extensions'){focusSearch();return}product.value=item.title;results.value=[];await nextTick();productSection.value?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'})}
 function escape(event) {if(event.key==='Escape'){activeMenu.value=null;mobileOpen.value=false;product.value=null}}
 onMounted(()=>document.addEventListener('keydown',escape))
@@ -111,5 +123,6 @@ onUnmounted(()=>document.removeEventListener('keydown',escape))
    <PricingSection @search-domain="focusSearch" @industry="industryShowcase?.showIndustry($event)" @show-messaging="industryShowcase?.showMessaging()" @hosting="selectItem({title:'Web hosting'})" />
   </main>
   <SiteFooter @search-domain="focusSearch" @show-messaging="industryShowcase?.showMessaging()" @industry="industryShowcase?.showIndustry($event)" @support="selectItem({title:'Help & support'})" @hosting="selectItem({title:'Web hosting'})" />
+  <FinenicAssistant v-if="assistantReady" @navigate="navigateAssistant" />
  </div>
 </template>
