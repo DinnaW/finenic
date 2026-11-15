@@ -17,7 +17,7 @@ onMounted(() => {
     globe = createGlobe(el, {
       width: width * ratio, height: width * ratio, devicePixelRatio: ratio,
       phi, theta: .22, dark: 0, diffuse: 1.1, mapSamples: 12000, mapBrightness: 3,
-      baseColor: [.38,.58,.86], markerColor: [.08,.22,.60], glowColor: [.76,.88,1],
+      baseColor: [.84,.85,.87], markerColor: [.32,.35,.40], glowColor: [.93,.95,.97],
       markers: [{ location:[6.9271,79.8612],size:.08 },{location:[51.5074,-.1278],size:.05},{location:[1.3521,103.8198],size:.05}],
       onRender(state) {
         const now = performance.now()

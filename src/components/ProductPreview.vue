@@ -2,10 +2,12 @@
 import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
 import { useReducedMotion } from 'motion-v'
 import Globe from './inspira/Globe.vue'
+import ProductBrand from './ProductBrand.vue'
 import GlassBarBackdrop from './ui/GlassBarBackdrop.vue'
 import AnimatedList from './inspira/AnimatedList.vue'
+import MagicAnimatedList from './magicui/AnimatedList.vue'
 import AnimatedBeam from './inspira/AnimatedBeam.vue'
-import { Globe2, Search, Check, ArrowRight, CalendarDays, ChevronLeft, ChevronRight, Clock, Mail, Bell, ShoppingBag, CreditCard, QrCode, Building2, MessageCircle, Server, ShieldCheck, RefreshCw, Link2, ArrowUpRight } from 'lucide-vue-next'
+import { Globe2, Search, Check, ArrowRight, CalendarDays, ChevronLeft, ChevronRight, Clock, Mail, Bell, ShoppingBag, CreditCard, QrCode, Building2, MessageCircle, Server, ShieldCheck, RefreshCw, Link2, ArrowUpRight, Plus, Wifi, BatteryFull, Signal, Heart, Scissors, Star } from 'lucide-vue-next'
 
 const props = defineProps({ item: Object, business: String, paused: Boolean })
 const root = ref(null), visible = ref(false)
@@ -57,7 +59,7 @@ onUnmounted(() => { clearInterval(demoTimer); observer?.disconnect(); document.r
 <template>
   <div ref="root" class="product-preview" :class="[`tone-${item.tone}`, `preview-${item.visual}`, `demo-phase-${demoPhase}`, { 'preview-awake': animate }]" :data-demo-phase="demoPhase" aria-hidden="true">
     <GlassBarBackdrop :variant="item.tone" />
-    <div class="preview-brand">{{ item.brand }}<span v-if="item.id === 'domain'">Start here</span></div>
+    <div class="preview-brand"><ProductBrand :name="item.brand" /><span v-if="item.id === 'domain'">Start here</span></div>
 
     <template v-if="item.visual === 'domain'">
       <Globe class="domain-live-globe" :active="animate" />
@@ -70,22 +72,27 @@ onUnmounted(() => { clearInterval(demoTimer); observer?.disconnect(); document.r
     </template>
 
     <template v-else-if="item.visual === 'booking'">
-      <div class="ui-window booking-window">
-        <div class="ui-title"><span>Choose your moment</span><CalendarDays :size="16"/></div>
-        <div class="calendar-month"><ChevronLeft :size="12"/><span>November</span><ChevronRight :size="12"/></div>
-        <div class="calendar-week"><span v-for="(day, i) in ['M','T','W','T','F','S','S']" :key="i">{{day}}</span><span v-for="day in 14" :key="day" :class="{'selected-day': day === 12 && demoPhase >= 1}">{{day}}</span></div>
-        <div class="booking-times"><span>10:00</span><span :class="{ 'chosen-time': demoPhase >= 2 }">10:30</span><span>11:00</span></div>
+      <div class="apple-calendar">
+        <div class="apple-calendar-toolbar"><span><ChevronLeft :size="12"/> Calendars</span><Plus :size="16"/></div>
+        <div class="apple-calendar-month"><strong>November <span>2026</span></strong><div><ChevronLeft :size="13"/><ChevronRight :size="13"/></div></div>
+        <div class="apple-calendar-grid"><span v-for="(day,i) in ['S','M','T','W','T','F','S']" :key="`weekday-${i}`" class="apple-weekday">{{ day }}</span><span v-for="day in 35" :key="day" class="apple-date" :class="{'apple-selected':day===12&&demoPhase>=1,'apple-other-month':day>30,'apple-event': [5,12,19,24].includes(day)}"><b>{{ day>30?day-30:day }}</b><i v-if="[5,12,19,24].includes(day)"></i></span></div>
+        <div class="apple-agenda"><div class="apple-agenda-date"><strong>12</strong><span>THU</span></div><div class="apple-agenda-event"><span>Cut & styling</span><small>10:30–11:15 AM · 45 min</small></div><span class="apple-event-check" :class="{'is-booked':demoPhase===3}"><Check :size="12"/></span></div>
+        <div class="apple-calendar-footer"><span>{{ demoPhase===3?'Appointment confirmed':'Choose a time that suits you' }}</span><span>Today</span></div>
       </div>
-      <div class="floating-note demo-confirm" :class="{ 'is-confirmed': demoPhase === 3 }"><span class="note-icon"><Check :size="15"/></span><div><strong>You're booked.</strong><small>Thursday, 10:30 am</small></div></div>
     </template>
 
     <template v-else-if="item.visual === 'app'">
-      <div class="app-phone">
-        <div class="phone-camera"></div><div class="phone-time">9:41</div>
-        <img :src="`${base}images/business/salon.jpg`" alt="" loading="lazy">
-        <div class="app-body"><small>{{ business }}</small><strong>A moment<br>for yourself.</strong><div class="app-choice"><span>Cut & styling</span><ArrowUpRight :size="12"/></div><div class="app-choice"><span>Your appointments</span><CalendarDays :size="12"/></div><div class="app-book">{{ demoPhase >= 2 ? 'Appointment booked' : 'Book again' }} <Check v-if="demoPhase >= 2" :size="12"/><ArrowRight v-else :size="12"/></div></div>
+      <div class="salon-iphone">
+       <div class="iphone-screen">
+        <div class="iphone-status"><span>9:41</span><div class="iphone-island"></div><div><Signal :size="10"/><Wifi :size="10"/><BatteryFull :size="13"/></div></div>
+        <div class="salon-app-header"><div><small>Your little reset</small><strong>{{ business }}</strong></div><span class="salon-avatar">A</span></div>
+        <div class="salon-editorial"><img :src="`${base}images/business/salon.jpg`" alt="" loading="lazy"><div class="salon-editorial-shade"></div><span class="salon-save"><Heart :size="12"/></span><div><small>MAKE TIME FOR YOU</small><strong>Good hair.<br>Better days.</strong><span>Find your next treatment <ArrowUpRight :size="11"/></span></div></div>
+        <div class="salon-section-heading"><strong>Your next appointment</strong><span>View all</span></div>
+        <div class="salon-appointment"><span class="salon-appointment-icon"><Scissors :size="18"/></span><div><strong>Cut & styling</strong><small>Thu, 12 Nov · 10:30 AM</small></div><Check :size="13"/></div>
+        <div class="salon-section-heading"><strong>Made for your moment</strong><span>Explore</span></div>
+        <div class="salon-treatments"><span>Hair & styling <Star :size="13"/></span><span>Care & colour <Heart :size="13"/></span></div>
+       </div>
       </div>
-      <div class="app-badge demo-confirm" :class="{ 'is-confirmed': demoPhase >= 2 }"><CalendarDays :size="18"/><span>Your next visit,<br>one tap away.</span></div>
     </template>
 
     <template v-else-if="website">
@@ -101,10 +108,10 @@ onUnmounted(() => { clearInterval(demoTimer); observer?.disconnect(); document.r
 
     <template v-else-if="item.visual === 'sms'">
       <div class="sms-live-stack">
-        <div class="activity-caption"><MessageCircle :size="15"/> {{ business }}</div>
-        <AnimatedList :items="smsItems" :active="animate" :delay="3500">
-          <template #default="{ item: message }"><div class="live-notification"><div class="notification-top"><span class="notification-symbol"><Bell v-if="message.icon === 'bell'" :size="15"/><Check v-else-if="message.icon === 'check'" :size="15"/><MessageCircle v-else :size="15"/></span><strong>{{ message.title }}</strong><small>now</small></div><p>{{ message.copy }}</p><span class="notification-delivery"><Check :size="10"/> Delivered with Ipsova</span></div></template>
-        </AnimatedList>
+        <div class="activity-caption"><span class="sms-channel-icon"><MessageCircle :size="15"/></span><div>Every message, on time.<small>Sent from {{ business }}</small></div></div>
+        <MagicAnimatedList :items="smsItems" :active="animate" :reduced="!!reduced" :delay="2600">
+          <template #default="{ item: message }"><div class="sms-notification"><span class="sms-message-icon" :class="`sms-message-${message.icon}`"><Bell v-if="message.icon === 'bell'" :size="17"/><Check v-else-if="message.icon === 'check'" :size="17"/><MessageCircle v-else :size="17"/></span><div class="sms-message-body"><div><strong>{{ message.title }}</strong><small>now</small></div><p>{{ message.copy }}</p><span><Check :size="10"/> Delivered · Ipsova</span></div></div></template>
+        </MagicAnimatedList>
       </div>
     </template>
 
@@ -169,15 +176,6 @@ onUnmounted(() => { clearInterval(demoTimer); observer?.disconnect(); document.r
 .typing-caret { display:inline-block; height:3.7cqw; width:1px; background:#676767; margin-left:.4cqw; vertical-align:middle; animation:caret 2s steps(1) infinite; }
 .domain-result-preview { display:flex; align-items:center; justify-content:space-between; margin:0 4cqw 3cqw; font-size:2.8cqw; }.domain-result-preview strong{font-weight:600}.domain-check { display:flex; align-items:center; gap:1cqw; font-size:2.3cqw; color:#4c7561; }
 .domain-extensions { display:flex; gap:2cqw; padding:0 4cqw 4cqw; }.domain-extensions span { background:#eeefec; border-radius:30px; padding:1cqw 2.4cqw; font-size:2.5cqw; }
-.booking-window { left:4%; right:4%; top:17%; padding:5cqw; }
-.calendar-month { display:flex; justify-content:space-between; margin:5cqw 0 3cqw; font-size:3cqw; }
-.calendar-week { display:grid; grid-template-columns:repeat(7,1fr); gap:1.4cqw; text-align:center; align-items:center; }
-.calendar-week span { display:grid; place-items:center; aspect-ratio:1; font-size:2.8cqw; }.calendar-week span:nth-child(-n+7) { color:#7a827e; font-size:2.4cqw; }.calendar-week .selected-day { color:#fff; background:#536c5e; border-radius:50%; }
-.booking-times { display:flex; justify-content:space-between; gap:2cqw; margin-top:4cqw; }.booking-times span { border:1px solid #e3e6e0; border-radius:5px; padding:1.5cqw 2.4cqw; font-size:2.5cqw; }.booking-times .chosen-time { background:#e7eee7; border-color:#a7b9aa; }
-.preview-booking .floating-note { bottom:9%; right:6%; }
-.app-phone { position:absolute; left:15%; top:14%; width:70%; height:100%; padding:1.5cqw; border-radius:8cqw; background:#fbfaf6; box-shadow:0 4cqw 8cqw -3cqw #4e493d66; transform:rotate(-5deg); overflow:hidden; }
-.phone-camera { position:absolute; top:2.7cqw; left:36%; width:28%; height:3.7cqw; border-radius:20px; background:#262626; z-index:2; }.phone-time { position:relative; margin:2cqw 3cqw 3cqw; font-size:2cqw; font-weight:700; }
-.app-phone img { width:100%; height:34cqw; object-fit:cover; border-radius:5cqw 5cqw 1cqw 1cqw; }.app-body { padding:3cqw; }.app-body>small { font-size:2cqw; color:#777d74; }.app-body>strong { display:block; font-size:7cqw; line-height:1.15; letter-spacing:-.04em; margin:2cqw 0 3cqw; font-weight:500; }.app-choice { display:flex; justify-content:space-between; padding:2cqw 0; border-top:1px solid #e4e5de; font-size:2.3cqw; }.app-book { display:flex; justify-content:space-between; background:#171717; color:#fff; padding:2cqw; border-radius:5px; margin-top:2cqw; font-size:2.3cqw; }.app-badge { position:absolute; right:5%; top:35%; display:flex; align-items:center; gap:2cqw; padding:3cqw; border-radius:8px; background:#fffffff2; box-shadow:0 2cqw 4cqw #4b493c18; font-size:2.7cqw; }
 .website-window { left:3%; right:3%; top:17%; }.site-preview-nav { display:flex; align-items:center; justify-content:space-between; padding:3cqw 4cqw; font-size:2.1cqw; }.site-preview-nav strong { font-size:2.6cqw; }.site-preview-nav>span>span{margin-left:2cqw}.site-photo { position:relative; height:53cqw; }.site-photo img { height:100%; width:100%; object-fit:cover; }.site-photo-shade { position:absolute; inset:0; background:linear-gradient(90deg,#17171799,transparent); }.site-preview-copy { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center; align-items:start; padding:5cqw; color:white; }.site-preview-copy>strong { max-width:13ch; font-size:6cqw; line-height:1.08; letter-spacing:-.035em; font-weight:500; }.site-preview-copy>small { font-size:2cqw; margin:2cqw 0 3cqw; max-width:26ch; }.site-preview-copy>span { display:flex; gap:2cqw; align-items:center; padding:1.6cqw 2cqw; border-radius:3px; background:white; color:#273128; font-size:2cqw; }.site-footer { display:flex; justify-content:space-between; align-items:center; padding:3cqw 4cqw; gap:2cqw; font-size:2.2cqw; }.site-footer>span { display:flex; gap:1cqw; align-items:center; }.site-footer strong{font-size:2.2cqw}.mini-dark { background:#171717; padding:1.5cqw; color:#fff; border-radius:3px; }.website-note { position:absolute; right:7%; bottom:7%; display:flex; align-items:center; gap:1.5cqw; background:#fbfcf9; padding:2.2cqw 3cqw; border-radius:30px; box-shadow:0 2cqw 5cqw #3939391a; font-size:2.5cqw; color:#416050; }
 .message-device { position:absolute; top:25%; left:11%; right:11%; padding:5cqw; border-radius:14px; background:#f8f7f4; box-shadow:0 4cqw 7cqw -3cqw #54434355; }.device-top { display:flex; gap:2.5cqw; align-items:center; font-size:3cqw; font-weight:600; margin-bottom:4cqw; }.sms-bubble { background:#e9ece7; padding:4cqw; border-radius:2px 10px 10px; }.sms-bubble small { font-size:2.4cqw; font-weight:600; }.sms-bubble p { font-size:3cqw; line-height:1.55; margin:2cqw 0; }.sms-bubble>span { font-size:2cqw; color:#6d756b; }.message-delivered { display:flex; align-items:center; justify-content:end; gap:.5cqw; font-size:2.3cqw; margin-top:3cqw; color:#54745d; }.message-delivered svg+svg { margin-left:-2cqw; }.sms-note { bottom:7%; left:6%; }
 .email-window { top:21%; left:8%; right:8%; padding:4cqw; }.tiny-avatar { width:5.5cqw; height:5.5cqw; display:grid!important; place-items:center; border-radius:50%; background:#e9e9e9; font-size:2.4cqw; }.email-address { font-size:2.5cqw; color:#757575; margin:1.5cqw 0 4cqw; }.mail-row { display:flex; align-items:center; gap:2.5cqw; padding:3cqw 0; border-top:1px solid #e7e9e8; }.mail-avatar { display:grid; place-items:center; flex-shrink:0; width:7cqw; height:7cqw; border-radius:50%; background:#e5e5e5; font-size:2.7cqw; color:#595959; }.mail-avatar.pale { background:#ecece7; color:#71766e; }.mail-row strong { display:block; font-size:2.7cqw; font-weight:600; }.mail-row small { display:block; font-size:2.2cqw; color:#727974; margin-top:1cqw; }.mail-dot { width:1.3cqw; height:1.3cqw; border-radius:50%; background:#818181; margin-left:auto; }.mail-footer { display:flex; align-items:center; gap:1.5cqw; font-size:2.2cqw; padding-top:3cqw; color:#6a766f; }
@@ -205,24 +203,10 @@ onUnmounted(() => { clearInterval(demoTimer); observer?.disconnect(); document.r
 .domain-query { font-size:4cqw; }
 .domain-result-preview { font-size:3.4cqw; }
 .domain-extensions span { font-size:3cqw; }
-.preview-brand { z-index:3; }
-.booking-window { padding:6cqw; }
-.calendar-week span { font-size:3.3cqw; }
-.calendar-month { margin-block:6cqw 4cqw; font-size:3.8cqw; }
-.booking-times span { font-size:3cqw; padding:2cqw 3cqw; }
-.preview-booking .floating-note { bottom:6%; right:3%; padding:4cqw; }
+.preview-brand { z-index:3; min-height:9cqw; }
 .floating-note strong { font-size:3.5cqw; }.floating-note small { font-size:3cqw; }
-.app-body { padding:4cqw; }.app-body>small { font-size:3cqw; }
-.app-choice,.app-book { font-size:3.2cqw; padding-block:3cqw; }
-.app-badge { top:auto; bottom:14%; right:3%; font-size:3.5cqw; }
 .sms-live-stack { position:absolute; left:4%; right:4%; top:17%; }
 .activity-caption { color:#172135; display:flex; align-items:center; gap:2cqw; font-size:3.5cqw; font-weight:600; margin:0 2cqw 4cqw; }
-.live-notification { background:#faf9f5; padding:5cqw; border-radius:12px; box-shadow:0 3cqw 6cqw -3cqw #49362e44; }
-.notification-top { display:flex; align-items:center; gap:2cqw; }
-.notification-symbol { display:grid; place-items:center; width:7cqw; height:7cqw; border-radius:50%; background:#e6e8de; color:#58624b; }
-.notification-top strong { font-size:3.4cqw; font-weight:600; }.notification-top small { font-size:2.6cqw; color:#767067; margin-left:auto; }
-.live-notification p { font-size:3.7cqw; line-height:1.5; margin:3cqw 0; }
-.notification-delivery { display:flex; align-items:center; gap:1cqw; font-size:2.7cqw; color:#626c56; }
 .email-window { left:3%; right:3%; top:17%; padding:6cqw; }
 .email-window .ui-title { font-size:4.2cqw; }.email-address { font-size:3.3cqw; margin-bottom:5cqw; }
 .mail-row { padding:4cqw 0; }.mail-row strong { font-size:3.5cqw; }.mail-row small { font-size:2.9cqw; }
@@ -256,4 +240,26 @@ onUnmounted(() => { clearInterval(demoTimer); observer?.disconnect(); document.r
 @media(prefers-reduced-motion:reduce) { .demo-confirm,.demo-lead,.calendar-week span,.booking-times span { transition:none; }.qr-scan-line { display:none; } }
 .hosting-activity { margin-top:4cqw; }.hosting-activity>div { display:flex; justify-content:space-between; font-size:2.7cqw; color:#526078; }.hosting-activity small { font-size:2.4cqw; }.hosting-activity svg { width:100%; height:auto; margin-top:2cqw; }
 .chat-answer { animation:none; min-height:26cqw; display:flex; align-items:center; }.demo-typing { display:flex; align-items:center; gap:1.4cqw; }.demo-typing i { width:1.5cqw; height:1.5cqw; border-radius:50%; background:#687d92; animation:demo-type 1.2s ease infinite; animation-play-state:paused; }.demo-typing i:nth-child(2) { animation-delay:120ms; }.demo-typing i:nth-child(3) { animation-delay:200ms; }.preview-awake .demo-typing i { animation-play-state:running; }@keyframes demo-type { 0%,80%,100% { opacity:.4; transform:translateY(0); } 40% { opacity:1; transform:translateY(-2px); } }
+</style>
+
+<style scoped>
+/* Calendar, phone and notifications use card-relative sizing at every breakpoint. */
+.apple-calendar { position:absolute; top:16%; left:5%; right:5%; padding:4.5cqw 4cqw 0; border:1px solid #fff; background:#ffffffed; border-radius:4cqw; box-shadow:0 5cqw 10cqw -5cqw #506b873b,inset 0 1px 0 white; overflow:hidden; color:#22242a; }
+.apple-calendar-toolbar { display:flex; justify-content:space-between; align-items:center; color:#df514a; font-size:3cqw; }.apple-calendar-toolbar>span { display:flex; align-items:center; gap:.6cqw; }
+.apple-calendar-month { display:flex; justify-content:space-between; align-items:center; margin:3cqw 0 2cqw; }.apple-calendar-month>strong { font-size:5.2cqw; letter-spacing:-.045em; font-weight:650; }.apple-calendar-month>strong>span { font-weight:400; color:#8a8c91; }.apple-calendar-month>div { display:flex; gap:2.8cqw; color:#df514a; }
+.apple-calendar-grid { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); text-align:center; gap:.4cqw 0; }.apple-weekday { font-size:2.6cqw; color:#a2a3a7; padding-bottom:2cqw; }.apple-date { position:relative; display:grid; place-items:center; height:6cqw; font-size:3.6cqw; }.apple-date>b { display:grid; place-items:center; width:5.8cqw; height:5.8cqw; border-radius:50%; font-weight:500; }.apple-other-month { color:#c5c6ca; }.apple-date>i { position:absolute; width:.8cqw; height:.8cqw; bottom:.4cqw; background:#babec3; border-radius:50%; }.apple-selected>b { background:#ee554d; color:#fff; }.apple-selected>i { background:white; }.apple-date>b { transition:background-color 200ms ease,color 200ms ease; }
+.apple-agenda { display:flex; align-items:center; gap:3cqw; margin-top:2cqw; padding:2.5cqw 0; border-top:1px solid #eeeeef; }.apple-agenda-date { display:flex; flex-direction:column; align-items:center; min-width:8cqw; }.apple-agenda-date strong { font-size:5.3cqw; font-weight:500; line-height:1.1; letter-spacing:-.04em; }.apple-agenda-date>span { font-size:2cqw; color:#9a9ca1; margin-top:1cqw; }.apple-agenda-event { padding-left:2.5cqw; border-left:2px solid #ed7166; }.apple-agenda-event>span { font-size:3.2cqw; font-weight:600; }.apple-agenda-event small { display:block; font-size:2.6cqw; color:#92949a; margin-top:1cqw; }.apple-event-check { display:grid; place-items:center; width:5.5cqw; height:5.5cqw; margin-left:auto; border-radius:50%; color:#3e8065; background:#e8f3ed; opacity:0; transition:opacity 200ms ease; }.apple-event-check.is-booked { opacity:1; }
+.apple-calendar-footer { display:flex; align-items:center; justify-content:space-between; border-top:1px solid #eeeef0; padding:2.5cqw 0; font-size:2.3cqw; color:#989ba1; gap:2cqw; }.apple-calendar-footer>span:last-child { color:#df514a; font-size:2.7cqw; }
+.salon-iphone { position:absolute; width:80cqw; height:166cqw; top:20cqw; left:10cqw; padding:1.8cqw; border-radius:11cqw; border:1px solid #f9fbfc; background:linear-gradient(115deg,#f7f9fb,#a5acb3 30%,#edf0f3 65%,#969fa8); box-shadow:0 5cqw 12cqw #3f5d7d26,inset 0 0 0 .5cqw #cad0d6; }
+.salon-iphone::before { content:''; position:absolute; top:24cqw; left:-.8cqw; height:12cqw; width:.7cqw; background:#a5afb9; border-radius:.5cqw 0 0 .5cqw; }.salon-iphone::after { content:''; position:absolute; top:30cqw; right:-.8cqw; height:15cqw; width:.7cqw; background:#a5afb9; border-radius:0 .5cqw .5cqw 0; }
+.iphone-screen { height:100%; border:.8cqw solid #25282d; border-radius:9.5cqw; background:#fafafa; overflow:hidden; }
+.iphone-status { position:relative; display:flex; align-items:center; justify-content:space-between; height:10cqw; padding:1cqw 5cqw 0; font-size:3cqw; font-weight:650; color:#23282e; }.iphone-status>div:last-child { display:flex; align-items:center; gap:.8cqw; }.iphone-status>div:last-child svg { width:3cqw; height:3cqw; }.iphone-island { position:absolute; top:2cqw; left:50%; transform:translateX(-50%); width:23cqw; height:5.5cqw; background:#17191d; border-radius:99px; }.iphone-island::after { content:''; position:absolute; right:2cqw; top:1.7cqw; width:2cqw; height:2cqw; border-radius:50%; background:radial-gradient(circle,#334659,#121a23); }
+.salon-app-header { display:flex; justify-content:space-between; align-items:center; padding:4cqw 4cqw 3.5cqw; }.salon-app-header small { display:block; font-size:2.5cqw; color:#8c9296; margin-bottom:.8cqw; }.salon-app-header strong { display:block; font-weight:600; letter-spacing:-.04em; font-size:4.5cqw; color:#222c32; }.salon-avatar { width:8cqw; height:8cqw; display:grid; place-items:center; border-radius:50%; background:#eee8df; color:#7f7265; font-size:3.3cqw; }
+.salon-editorial { position:relative; margin:0 3cqw; height:40cqw; border-radius:4cqw; overflow:hidden; }.salon-editorial img { width:100%; height:100%; object-fit:cover; object-position:center 38%; }.salon-editorial-shade { position:absolute; inset:0; background:linear-gradient(90deg,#141e21a6,#141e2126 90%); }.salon-save { position:absolute; right:2.6cqw; top:2.6cqw; width:6cqw; height:6cqw; border-radius:50%; background:#ffffffd9; display:grid; place-items:center; }.salon-editorial>div:last-child { position:absolute; inset:0; padding:5cqw 4cqw; display:flex; flex-direction:column; justify-content:end; align-items:start; color:white; }.salon-editorial small { font-size:1.8cqw; letter-spacing:.08em; margin-bottom:2.5cqw; }.salon-editorial strong { font-size:7cqw; line-height:1.05; letter-spacing:-.055em; font-weight:500; }.salon-editorial>div:last-child>span { display:flex; align-items:center; gap:2cqw; font-size:2.2cqw; margin-top:3cqw; }
+.salon-section-heading { display:flex; justify-content:space-between; align-items:center; margin:4cqw 4cqw 2cqw; }.salon-section-heading strong { font-size:2.9cqw; font-weight:600; }.salon-section-heading>span { font-size:2.2cqw; color:#929a9f; }
+.salon-appointment { display:flex; align-items:center; gap:2.3cqw; margin:0 3.5cqw; padding:3cqw 2.5cqw; border-radius:3cqw; background:white; border:1px solid #e7e9ea; }.salon-appointment-icon { width:8cqw; height:8cqw; display:grid; place-items:center; background:#f2eee8; color:#8b8175; border-radius:2cqw; }.salon-appointment strong { display:block; font-size:3cqw; font-weight:550; }.salon-appointment small { display:block; font-size:2.2cqw; color:#90989e; margin-top:1cqw; }.salon-appointment>svg { margin-left:auto; color:#688875; }.salon-treatments { display:flex; gap:2cqw; margin:0 4cqw; }.salon-treatments>span { flex:1; border:1px solid #e7ebed; background:white; border-radius:3cqw; padding:4cqw 2cqw; font-size:2.5cqw; display:flex; justify-content:space-between; gap:2cqw; }
+.sms-live-stack { left:4%; right:4%; top:18%; bottom:0; overflow:hidden; mask-image:linear-gradient(#000 0%,#000 83%,transparent 100%); padding:0 1cqw 8cqw; }
+.activity-caption { margin:0 1cqw 5cqw; gap:2.5cqw; font-size:3.6cqw; font-weight:550; color:#334653; }.activity-caption small { display:block; font-size:2.7cqw; margin-top:.8cqw; color:#8c9aa4; font-weight:400; }.sms-channel-icon { display:grid; place-items:center; width:9cqw; height:9cqw; border-radius:3cqw; background:#fff9; border:1px solid white; color:#688b9b; }
+.sms-notification { display:flex; align-items:start; gap:3cqw; padding:4cqw 3.5cqw; background:#ffffffed; border:1px solid #fff; border-radius:4cqw; box-shadow:0 1cqw 2cqw #263e5505,0 4cqw 7cqw -4cqw #263e5526; }.sms-message-icon { flex-shrink:0; display:grid; place-items:center; width:9cqw; height:9cqw; border-radius:3cqw; background:#e9f2f7; color:#63849b; }.sms-message-check { background:#edf3ed; color:#78917d; }.sms-message-message { background:#f3eeea; color:#9d8b7a; }.sms-message-body { min-width:0; flex:1; }.sms-message-body>div { display:flex; gap:1cqw; align-items:baseline; }.sms-message-body strong { font-size:3.2cqw; font-weight:600; letter-spacing:-.015em; color:#283b48; }.sms-message-body small { margin-left:auto; color:#a1aab1; font-size:2.3cqw; }.sms-message-body p { margin:1.8cqw 0 2cqw; font-size:3.1cqw; line-height:1.55; color:#6e7d88; }.sms-message-body>span { display:flex; align-items:center; gap:1cqw; font-size:2.3cqw; color:#8c9d97; }
+@media(prefers-reduced-motion:reduce) { .apple-date>b,.apple-event-check { transition:none; } }
 </style>
