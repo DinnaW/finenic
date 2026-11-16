@@ -94,6 +94,7 @@ function resetChat() { messages.value = []; draft.value = ''; previousIndustry =
 async function navigate(action) { closeChat(false); await nextTick(); emit('navigate', action) }
 function keyboard(event) { if (event.key === 'Escape' && opened.value) { event.preventDefault(); closeChat() } }
 function changeLayout() { if (opened.value) { closeChat(false); openChat() } }
+defineExpose({ openChat })
 onMounted(() => {
   hero = document.querySelector('.hero')
   sections = [['services', '#business-services'], ['catalogue', '.industry-showcase'], ['journey', '#business-journey'], ['pricing', '#pricing']].map(([name, selector]) => ({ name, element: document.querySelector(selector) })).filter(item => item.element)

@@ -10,6 +10,10 @@ import IndustryShowcase from './components/IndustryShowcase.vue'
 import BusinessJourney from './components/BusinessJourney.vue'
 import SiteFooter from './components/SiteFooter.vue'
 import PricingSection from './components/PricingSection.vue'
+import FaqSection from './components/FaqSection.vue'
+import SupportCta from './components/SupportCta.vue'
+const assistant = ref(null)
+async function openSupportChat() { assistantReady.value = true; await nextTick(); assistant.value?.openChat() }
 const FinenicAssistant = defineAsyncComponent(() => import('./components/FinenicAssistant.vue'))
 const industryShowcase = ref(null)
 import PremiumButton from './components/PremiumButton.vue'
@@ -121,8 +125,10 @@ onUnmounted(()=>document.removeEventListener('keydown',escape))
    <IndustryShowcase ref="industryShowcase" @search-domain="focusSearch" />
    <BusinessJourney @search-domain="focusSearch" @show-messaging="industryShowcase?.showMessaging()" />
    <PricingSection @search-domain="focusSearch" @industry="industryShowcase?.showIndustry($event)" @show-messaging="industryShowcase?.showMessaging()" @hosting="selectItem({title:'Web hosting'})" />
+   <FaqSection />
+   <SupportCta @contact="openSupportChat" />
   </main>
   <SiteFooter @search-domain="focusSearch" @show-messaging="industryShowcase?.showMessaging()" @industry="industryShowcase?.showIndustry($event)" @support="selectItem({title:'Help & support'})" @hosting="selectItem({title:'Web hosting'})" />
-  <FinenicAssistant v-if="assistantReady" @navigate="navigateAssistant" />
+  <FinenicAssistant v-if="assistantReady" ref="assistant" @navigate="navigateAssistant" />
  </div>
 </template>

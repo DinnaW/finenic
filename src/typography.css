@@ -25,4 +25,6 @@
   .site-shell--gradient-hero .domain-area { max-width:35.9375vw; }
   .site-shell .pricing-inner { max-width:64.583333vw; }
   .site-shell .pricing-pill-rows { max-width:68.75vw; }
+  .site-shell .statement-inner { max-width:70vw; }
+  .site-shell .journey-inner { max-width:75vw; }
 }
