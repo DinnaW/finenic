@@ -17,3 +17,12 @@
 }
 
 @media(max-width:700px) { .site-shell { --section-gutter:6vw; } }
+/* Preserve the desktop composition while allowing wide and zoomed-out viewports to grow. */
+@media (min-width:1921px) {
+  .site-shell { --section-width:87.5vw; }
+  .site-shell--gradient-hero .header-inner { max-width:83.333333vw; }
+  .site-shell--gradient-hero .hero-content { max-width:68.75vw; }
+  .site-shell--gradient-hero .domain-area { max-width:35.9375vw; }
+  .site-shell .pricing-inner { max-width:64.583333vw; }
+  .site-shell .pricing-pill-rows { max-width:68.75vw; }
+}
