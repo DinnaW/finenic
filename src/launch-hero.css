@@ -84,3 +84,7 @@
   background:radial-gradient(ellipse 130% 112% at 50% -10%,#fff 0%,#fff 63%,#f5fbff 69%,#e3f2fd 75%,#bcdefb 81%,#91c9f7 88%,#83c3f5 94%,#a8d7fa 101%,#e3f2fd 111%);
  }
 }
+/* Lift the hero copy slightly on wide displays without changing smaller layouts. */
+@media(min-width:1921px) {
+ .site-shell--gradient-hero .launch-hero .hero-content { padding-top:clamp(24px,3vh,40px); padding-bottom:clamp(170px,24vh,260px); }
+}
