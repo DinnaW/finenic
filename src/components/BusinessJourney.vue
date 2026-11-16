@@ -22,7 +22,7 @@ onMounted(()=>{
   cards.slice(0,-1).forEach((card,index)=>{
    const face=card.querySelector('.solution-face')
    const next=cards[index+1]
-   gsap.to(face,{scale:.96,y:-6,ease:'none',scrollTrigger:{id:`solution-depth-${index}`,trigger:next,start:'top 88%',end:()=>`top ${headerOffset()+24+(index+1)*24}px`,scrub:.55,invalidateOnRefresh:true}})
+   gsap.to(face,{y:-6,ease:'none',scrollTrigger:{id:`solution-depth-${index}`,trigger:next,start:'top 88%',end:()=>`top ${headerOffset()+24+(index+1)*24}px`,scrub:.55,invalidateOnRefresh:true}})
    gsap.to(face.querySelector('.stack-dim'),{opacity:.09,ease:'none',scrollTrigger:{trigger:next,start:'top 65%',end:()=>`top ${headerOffset()+24+(index+1)*24}px`,scrub:.55}})
   })
   // Bring a covered card back into view when reached through keyboard navigation.
@@ -64,7 +64,6 @@ onUnmounted(()=>media?.revert())
      </div>
     </article>
    </div>
-   <p class="journey-end">One place to start. Room for everything that comes next.</p>
   </div>
  </section>
 </template>

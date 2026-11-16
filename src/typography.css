@@ -26,5 +26,17 @@
   .site-shell .pricing-inner { max-width:64.583333vw; }
   .site-shell .pricing-pill-rows { max-width:68.75vw; }
   .site-shell .statement-inner { max-width:70vw; }
-  .site-shell .journey-inner { max-width:75vw; }
+  .site-shell .journey-inner { max-width:var(--section-width); }
+}
+/* Keep section joins compact; retain the second section's accepted measure. */
+.site-shell .industry-showcase { padding-bottom:clamp(32px,3.5vw,60px); }
+.site-shell .business-journey { padding-top:clamp(28px,3vw,50px); padding-bottom:clamp(24px,2.5vw,42px); }
+.site-shell .solution-stack { padding-bottom:0; }
+.site-shell .solution-panel:last-child { margin-bottom:0; }
+.site-shell .pricing-section { padding-top:clamp(30px,3.5vw,58px); }
+@media(min-width:1921px) {
+  .site-shell .pricing-inner { max-width:82vw; }
+  .site-shell .pricing-pill-rows { max-width:87.5vw; }
+  .site-shell .faq-inner { max-width:82vw; }
+  .site-shell--gradient-hero .hero-content { max-width:90vw; }
 }
