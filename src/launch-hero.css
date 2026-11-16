@@ -86,5 +86,5 @@
 }
 /* Lift the hero copy slightly on wide displays without changing smaller layouts. */
 @media(min-width:1921px) {
- .site-shell--gradient-hero .launch-hero .hero-content { padding-top:clamp(24px,3vh,40px); padding-bottom:clamp(170px,24vh,260px); }
+ .site-shell--gradient-hero .launch-hero .hero-content { padding-top:12px; padding-bottom:clamp(210px,28vh,310px); }
 }
