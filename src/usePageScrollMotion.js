@@ -35,11 +35,15 @@ export function usePageScrollMotion(root) {
         })
       }
       // The existing hero entrance owns the individual columns. Scroll motion owns their parent.
-      if (context.conditions.desktop) {
+      if (context.conditions.desktop && page.querySelector('.gradient-bars')) {
         gsap.to(select('.gradient-bars'),{
           yPercent:7, opacity:.78, ease:'none',
           scrollTrigger:{ id:'page-hero-depth', trigger:select('.hero')[0], start:'top top', end:'bottom top', scrub:.8 },
         })
+      }
+      if (page.querySelector('.hero-liquid-wave')) {
+        gsap.to(select('.hero-liquid-wave'), { yPercent:-32, scaleX:1.15, rotation:3, ease:'none',
+          scrollTrigger:{ trigger:select('.hero')[0], start:'bottom bottom', end:'bottom top', scrub:.8 } })
       }
       reveal('.statement-aside',{distance:14,duration:.8,id:'page-story-intro'})
       reveal('.statement-links',{distance:18,duration:.85,opacity:.65,id:'page-story-links'})

@@ -2,7 +2,6 @@
 import { ref, nextTick, onMounted, onUnmounted, defineAsyncComponent } from 'vue'
 import { ArrowUpRight, ArrowRight, ChevronDown, Search, Globe2, Menu, X, Server, Mail, LifeBuoy, BookOpen } from 'lucide-vue-next'
 import { domainSuggestions } from './domain'
-import GradientBarHero from './components/ui/GradientBarHero.vue'
 import AvatarPill from './components/ui/AvatarPill.vue'
 import DomainStory from './components/DomainStory.vue'
 import BusinessServices from './components/BusinessServices.vue'
@@ -12,6 +11,7 @@ import SiteFooter from './components/SiteFooter.vue'
 import PricingSection from './components/PricingSection.vue'
 import FaqSection from './components/FaqSection.vue'
 import SupportCta from './components/SupportCta.vue'
+import SiteHeader from './components/SiteHeader.vue'
 const assistant = ref(null)
 async function openSupportChat() { assistantReady.value = true; await nextTick(); assistant.value?.openChat() }
 const FinenicAssistant = defineAsyncComponent(() => import('./components/FinenicAssistant.vue'))
@@ -20,6 +20,7 @@ import PremiumButton from './components/PremiumButton.vue'
 import './gradient-hero.css'
 import './typography.css'
 import './site-motion.css'
+import './launch-hero.css'
 import { useSiteMotion } from './useSiteMotion'
 import { usePageScrollMotion } from './usePageScrollMotion'
 const siteRoot = ref(null)
@@ -72,6 +73,17 @@ async function navigateAssistant(action) {
  if (action.type === 'messaging') { await industryShowcase.value?.showMessaging(); return }
  if (action.type === 'pricing') { const heading = document.getElementById('pricing-heading'); heading?.focus({preventScroll:true}); heading?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'}) }
 }
+async function headerAction(action) {
+ if(action==='domain') return focusSearch()
+ if(action==='messaging') return industryShowcase.value?.showMessaging()
+ if(action==='apps') return industryShowcase.value?.showIndustry(0)
+ if(action==='maintenance') return industryShowcase.value?.showIndustry(6)
+ if(action==='hosting') return selectItem({title:'Web hosting'})
+ if(action==='pbx') return selectItem({title:'Cloud PBX'})
+ const id=action==='faq'?'faq-heading':action==='websites'?'services-heading':'pricing-heading'
+ const target=document.getElementById(id)
+ target?.setAttribute('tabindex','-1');target?.focus({preventScroll:true});target?.scrollIntoView({behavior:reducedMotion.value?'instant':'smooth',block:'start'})
+}
 async function selectItem(item) {activeMenu.value=null;mobileOpen.value=false;if(item.title==='Find a domain'||item.title==='Domain extensions'){focusSearch();return}product.value=item.title;results.value=[];await nextTick();productSection.value?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'})}
 function escape(event) {if(event.key==='Escape'){activeMenu.value=null;mobileOpen.value=false;product.value=null}}
 onMounted(()=>document.addEventListener('keydown',escape))
@@ -81,30 +93,18 @@ onUnmounted(()=>document.removeEventListener('keydown',escape))
 <template>
  <div ref="siteRoot" class="site-shell site-shell--gradient-hero" @click="activeMenu=null">
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="header-wrap" :class="{ 'is-scrolled': headerScrolled }">
-   <div class="header-inner flex items-center justify-between">
-    <a class="brand flex items-center" :href="baseUrl" aria-label="finenic home"><svg class="brand-symbol" viewBox="0 0 40 40" aria-hidden="true"><ellipse cx="20" cy="20" rx="5.5" ry="18" transform="rotate(45 20 20)"/><ellipse cx="20" cy="20" rx="5.5" ry="18" transform="rotate(-45 20 20)"/><circle cx="20" cy="20" r="4" fill="white"/></svg><span>finenic<span class="brand-dot">.</span></span></a>
-    <nav class="desktop-nav flex items-center" aria-label="Main navigation">
-     <div v-for="(items,name) in menuItems" :key="name" class="nav-item" @click.stop>
-      <button class="nav-trigger flex items-center" :aria-expanded="activeMenu===name" :aria-controls="`menu-${name}`" @click="activeMenu=activeMenu===name?null:name">{{name}}<ChevronDown :size="13" :class="{'rotate-180':activeMenu===name}" /></button>
-      <div v-if="activeMenu===name" :id="`menu-${name}`" class="nav-dropdown">
-       <button v-for="item in items" :key="item.title" class="nav-option flex items-center" @click="selectItem(item)"><component :is="item.icon" :size="19"/><span><strong>{{item.title}}</strong><small>{{item.text}}</small></span><ArrowUpRight :size="16"/></button>
-      </div>
-     </div>
-    </nav>
-    <div class="header-actions flex items-center"><button class="contact-button" @click.stop="selectItem({title:'Help & support'})">Let’s talk <ArrowUpRight :size="14"/></button><PremiumButton variant="header" @click="focusSearch">Get started<template #icon><ArrowUpRight :size="15"/></template></PremiumButton><button class="mobile-toggle" aria-label="Toggle navigation" :aria-expanded="mobileOpen" aria-controls="mobile-nav" @click="mobileOpen=!mobileOpen"><X v-if="mobileOpen" :size="22"/><Menu v-else :size="22"/></button></div>
-   </div>
-   <nav v-if="mobileOpen" id="mobile-nav" class="mobile-nav" aria-label="Mobile navigation"><div v-for="(items,name) in menuItems" :key="name"><p>{{name}}</p><button v-for="item in items" :key="item.title" @click="selectItem(item)">{{item.title}}<ArrowUpRight :size="16"/></button></div></nav>
-  </header>
+  <SiteHeader :scrolled="headerScrolled" @action="headerAction" />
 
   <main id="main">
-   <section class="hero relative" aria-labelledby="hero-title">
-    <GradientBarHero :reduced="reducedMotion" />
-    <div class="hero-content relative mx-auto text-center">
+   <section class="hero launch-hero relative" aria-labelledby="hero-title">
+    <div class="hero-liquid" aria-hidden="true"><div class="hero-liquid-wave"></div></div>
+    <div class="hero-content relative mx-auto">
+     <div class="launch-hero-copy">
      <AvatarPill />
      <div class="hero-introduction">
-     <h1 id="hero-title">Built for your next big idea.<br> Starting with your domain.</h1>
-     <p class="hero-description">Find your name. Build your website. Make it yours.</p>
+     <h1 id="hero-title">Built for your next big idea.<br>Starting with your domain.</h1>
+     <p class="hero-description">Find your name. Launch your website.
+      Bring your business to life.</p>
      </div>
      <div class="domain-area mx-auto" :class="{ 'is-engaged': heroInteracted }" @focusin="heroInteracted = true">
       <form class="domain-search flex items-center" :class="{'has-error':error}" @submit.prevent="searchDomains" role="search" aria-label="Domain search">
@@ -116,8 +116,10 @@ onUnmounted(()=>document.removeEventListener('keydown',escape))
       <div class="extension-row flex items-center justify-center"><span id="domain-hint">Make it yours</span><button v-for="ext in extensions" :key="ext" class="extension-button" @click="chooseExtension(ext)">{{ext}}<span class="extension-dot"></span></button><span class="more-extensions">& more</span></div>
      </div>
      <section v-if="results.length" ref="resultSection" class="search-results text-left" aria-label="Domain suggestions" aria-live="polite"><div class="result-header"><div><h2>A name for your next chapter</h2><p>Search preview ? Live availability and pricing aren?t connected.</p></div><button class="icon-button" aria-label="Close domain suggestions" @click="results=[];input?.focus()"><X :size="18"/></button></div><div v-for="(domain,i) in results" :key="domain" class="domain-result"><div><strong>{{domain}}</strong><span v-if="i===0" class="match-label">Your search</span></div><a :href="`https://lookup.icann.org/en/lookup?name=${encodeURIComponent(domain)}`" target="_blank" rel="noopener noreferrer">Look up <ArrowUpRight :size="15"/><span class="sr-only">{{domain}} on ICANN, opens in a new tab</span></a></div><p class="result-note">ICANN lookup shows registration records; it does not reserve a domain.</p></section>
-     <section v-if="product" ref="productSection" class="product-panel text-left" aria-live="polite"><div class="result-header"><h2>{{product}}</h2><button class="icon-button" aria-label="Close details" @click="product=null"><X :size="18"/></button></div><template v-if="product==='Getting started'"><p>Start with a name that?s short, memorable, and easy to spell. Then choose a hosting plan for the website you want to build.</p><button class="text-link" @click="focusSearch">Find your domain <ArrowRight :size="16"/></button></template><template v-else-if="product==='Help & support'"><p>Finenic is taking shape. Support and contact options will be added as the website launches.</p></template><template v-else><p>{{product==='Business email'?'Bring your brand to every conversation with an email address at your own domain.':'Give your website a home with room for your ideas to grow.'}}</p><p class="panel-note">Plans and pricing are coming soon.</p><button class="text-link" @click="focusSearch">Start with your domain <ArrowRight :size="16"/></button></template></section>
+     <section v-if="product" ref="productSection" class="product-panel text-left" aria-live="polite"><div class="result-header"><h2>{{product}}</h2><button class="icon-button" aria-label="Close details" @click="product=null"><X :size="18"/></button></div><template v-if="product==='Getting started'"><p>Start with a name that?s short, memorable, and easy to spell. Then choose a hosting plan for the website you want to build.</p><button class="text-link" @click="focusSearch">Find your domain <ArrowRight :size="16"/></button></template><template v-else-if="product==='Help & support'"><p>Finenic is taking shape. Support and contact options will be added as the website launches.</p></template><template v-else-if="product==='Cloud PBX'"><p>Business phone options and Cloud PBX details are coming soon.</p></template><template v-else><p>{{product==='Business email'?'Bring your brand to every conversation with an email address at your own domain.':'Give your website a home with room for your ideas to grow.'}}</p><p class="panel-note">Plans and pricing are coming soon.</p><button class="text-link" @click="focusSearch">Start with your domain <ArrowRight :size="16"/></button></template></section>
      <button class="explore-link flex items-center justify-center" @click="selectItem({title:'Web hosting'})">Explore hosting <ArrowUpRight :size="15"/></button>
+     </div>
+     
     </div>
    </section>
    <DomainStory @search-domain="focusSearch" />
