@@ -56,9 +56,9 @@ onUnmounted(()=>{resize?.disconnect();document.removeEventListener('pointerdown'
  .compact-row .brand { font-size:clamp(26px,1.7vw,44px); }
  .compact-row .brand-symbol { width:clamp(28px,1.8vw,44px); height:clamp(28px,1.8vw,44px); }
  .compact-navigation { gap:clamp(18px,1.5vw,42px); }
- .compact-trigger { gap:clamp(7px,.45vw,12px); font-size:clamp(13px,1.05vw,28px); }
+ .compact-trigger { gap:clamp(7px,.45vw,12px); font-size:clamp(13px,.9vw,24px); }
  .compact-trigger>svg { width:clamp(14px,.75vw,20px); height:clamp(14px,.75vw,20px); }
- .compact-utilities { gap:clamp(20px,1.1vw,36px); font-size:clamp(12px,.86vw,23px); }
+ .compact-utilities { gap:clamp(20px,1.1vw,36px); font-size:clamp(12px,.75vw,20px); }
  .compact-utilities button { min-height:clamp(44px,2vw,58px); }
  .utility-signin svg { width:clamp(18px,.9vw,24px); height:clamp(18px,.9vw,24px); }
  .compact-icon { width:clamp(30px,1.5vw,38px); }
