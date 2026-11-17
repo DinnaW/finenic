@@ -9,6 +9,7 @@ import IndustryShowcase from './components/IndustryShowcase.vue'
 import BusinessJourney from './components/BusinessJourney.vue'
 import SiteFooter from './components/SiteFooter.vue'
 import PricingSection from './components/PricingSection.vue'
+import BlogSection from './components/BlogSection.vue'
 import FaqSection from './components/FaqSection.vue'
 import SupportCta from './components/SupportCta.vue'
 import SiteHeader from './components/SiteHeader.vue'
@@ -127,6 +128,7 @@ onUnmounted(()=>document.removeEventListener('keydown',escape))
    <IndustryShowcase ref="industryShowcase" @search-domain="focusSearch" />
    <BusinessJourney @search-domain="focusSearch" @show-messaging="industryShowcase?.showMessaging()" />
    <PricingSection @search-domain="focusSearch" @industry="industryShowcase?.showIndustry($event)" @show-messaging="industryShowcase?.showMessaging()" @hosting="selectItem({title:'Web hosting'})" />
+   <BlogSection />
    <FaqSection />
    <SupportCta @contact="openSupportChat" />
   </main>
