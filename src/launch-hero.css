@@ -98,9 +98,11 @@
  .site-shell--gradient-hero .launch-hero .launch-hero-copy { max-width:80vw; transform:translateY(clamp(-80px,-3vw,-48px)); }
  .site-shell--gradient-hero .launch-hero h1 { font-size:4.5vw; }
  .site-shell--gradient-hero .launch-hero .hero-description { font-size:1.05vw; }
- .site-shell--gradient-hero .launch-hero .domain-area { width:38vw; max-width:none; }
- .site-shell--gradient-hero .launch-hero .domain-search input { font-size:.78vw; }
- .site-shell--gradient-hero .launch-hero .premium-button--hero { font-size:.625vw; min-height:2.5vw; padding-inline:1vw; }
+ .site-shell--gradient-hero .launch-hero .domain-area { width:44vw; max-width:none; }
+ .site-shell--gradient-hero .launch-hero .domain-search { padding:clamp(12px,.55vw,20px); gap:clamp(12px,.8vw,20px); }
+ .site-shell--gradient-hero .launch-hero .search-globe { width:clamp(24px,.95vw,32px); margin-left:clamp(14px,.8vw,24px); }
+ .site-shell--gradient-hero .launch-hero .domain-search input { font-size:clamp(18px,.9vw,30px); }
+ .site-shell--gradient-hero .launch-hero .premium-button--hero { font-size:clamp(16px,.75vw,24px); min-height:clamp(66px,2.8vw,88px); padding-inline:clamp(26px,1.2vw,40px); }
  .site-shell--gradient-hero .launch-hero .avatar-pill-label { font-size:.625vw; }
  .site-shell--gradient-hero .launch-hero .extension-row { gap:1.04vw; }
  .site-shell--gradient-hero .launch-hero #domain-hint { font-size:.573vw; }
