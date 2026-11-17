@@ -87,9 +87,10 @@
 /* Give desktop layouts more vertical room while preserving smaller screens. */
 @media(min-width:1001px) {
  .site-shell--gradient-hero .hero.launch-hero { min-height:max(1100px,calc(100svh - var(--header-height))); }
+ .site-shell--gradient-hero .launch-hero .hero-content { padding-top:clamp(32px,5svh,80px); }
 }
 @media(min-width:1921px) {
- .site-shell--gradient-hero .launch-hero .hero-content { padding-top:clamp(40px,4svh,64px); padding-bottom:clamp(72px,7svh,112px); }
+ .site-shell--gradient-hero .launch-hero .hero-content { padding-top:clamp(28px,3svh,48px); padding-bottom:clamp(72px,7svh,112px); }
 }
 /* Scale the hero typography proportionally beyond the desktop reference width. */
 @media(min-width:1921px) {
