@@ -51,4 +51,24 @@ onUnmounted(()=>{resize?.disconnect();document.removeEventListener('pointerdown'
 @media(max-width:1050px) { .compact-navigation { display:none; }.compact-navigation.is-open { display:flex; position:absolute; top:100%; left:0; right:0; max-height:calc(100dvh - var(--header-height)); overflow:auto; background:white; flex-direction:column; align-items:stretch; gap:2px; padding:14px 5vw 22px; border-bottom:1px solid #dce6ef; box-shadow:0 14px 25px #173b8315; }.compact-menu { position:static; width:100%; box-shadow:none; }.compact-trigger { width:100%; justify-content:space-between; }.compact-mobile-links { border-top:1px solid #e2ebf2; padding-top:16px; }.compact-toggle { display:grid; place-items:center; width:36px; }.utility-link,.utility-signin span { display:block; }.compact-utilities { gap:18px; }.compact-notice { position:fixed; top:var(--header-height); right:5vw; max-width:90vw; } }
 @media(max-width:600px) { .compact-row { width:88%; height:66px; }.compact-row .brand { font-size:24px; }.compact-utilities { gap:8px; }.utility-link { display:none; }.header-ribbon :deep(.marquee-group),.header-ribbon :deep(.marquee-group button) { gap:32px; } }
 @media(max-width:360px) { .utility-signin span { display:none; } }
+@media(min-width:1921px) {
+ .compact-row { height:clamp(76px,3.8vw,104px); gap:clamp(22px,2.5vw,64px); }
+ .compact-row .brand { font-size:clamp(26px,1.7vw,44px); }
+ .compact-row .brand-symbol { width:clamp(28px,1.8vw,44px); height:clamp(28px,1.8vw,44px); }
+ .compact-navigation { gap:clamp(15px,1.35vw,36px); }
+ .compact-trigger { gap:clamp(6px,.4vw,10px); font-size:clamp(12px,.95vw,24px); }
+ .compact-trigger>svg { width:clamp(12px,.65vw,18px); height:clamp(12px,.65vw,18px); }
+ .compact-utilities { gap:clamp(18px,1vw,30px); font-size:clamp(11px,.8vw,20px); }
+ .compact-utilities button { min-height:clamp(40px,1.9vw,52px); }
+ .utility-signin svg { width:clamp(17px,.85vw,22px); height:clamp(17px,.85vw,22px); }
+ .compact-icon { width:clamp(30px,1.5vw,38px); }
+ .compact-icon svg { width:clamp(20px,1vw,26px); height:clamp(20px,1vw,26px); }
+ .compact-menu,.compact-notice { width:clamp(290px,18vw,420px); padding:clamp(9px,.5vw,14px); }
+ .compact-menu>button { padding:clamp(14px,.65vw,20px) clamp(12px,.6vw,16px); }
+ .compact-menu strong { font-size:clamp(13px,.65vw,17px); }
+ .compact-menu small { font-size:clamp(11px,.55vw,15px); }
+ .compact-notice { padding:clamp(20px,.9vw,26px); }
+ .compact-notice strong { font-size:clamp(14px,.65vw,17px); }
+ .compact-notice p,.compact-notice>button { font-size:clamp(12px,.55vw,15px); }
+}
 </style>
