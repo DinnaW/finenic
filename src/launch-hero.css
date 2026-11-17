@@ -84,14 +84,14 @@
   background:radial-gradient(ellipse 130% 112% at 50% -10%,#fff 0%,#fff 63%,#f5fbff 69%,#e3f2fd 75%,#bcdefb 81%,#91c9f7 88%,#83c3f5 94%,#a8d7fa 101%,#e3f2fd 111%);
  }
 }
-/* Give desktop layouts more vertical room while preserving smaller screens. */
-@media(min-width:1001px) {
- .site-shell--gradient-hero .hero.launch-hero { min-height:max(1100px,calc(100svh - var(--header-height))); }
- .site-shell--gradient-hero .launch-hero .hero-content { padding-top:0; }
- .site-shell--gradient-hero .launch-hero-copy { transform:translateY(-48px); }
+/* Fit laptop layouts to the viewport and keep larger desktops spacious. */
+@media(min-width:1001px) and (max-width:1920px) {
+ .site-shell--gradient-hero .hero.launch-hero { min-height:calc(100svh - var(--header-height)); }
+ .site-shell--gradient-hero .launch-hero .hero-content { padding-top:clamp(16px,3svh,32px); padding-bottom:clamp(24px,4svh,48px); }
 }
 @media(min-width:1921px) {
- .site-shell--gradient-hero .launch-hero .hero-content { padding-bottom:clamp(72px,7svh,112px); }
+ .site-shell--gradient-hero .hero.launch-hero { min-height:max(1100px,calc(100svh - var(--header-height))); }
+ .site-shell--gradient-hero .launch-hero .hero-content { padding-top:clamp(16px,2svh,32px); padding-bottom:clamp(72px,7svh,112px); }
 }
 /* Scale the hero typography proportionally beyond the desktop reference width. */
 @media(min-width:1921px) {
