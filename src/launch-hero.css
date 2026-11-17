@@ -86,7 +86,7 @@
 }
 /* Cap the hero on wide monitors while preserving smaller layouts. */
 @media(min-width:1921px) {
- .site-shell--gradient-hero .hero.launch-hero { min-height:min(820px,calc(100svh - var(--header-height))); }
+ .site-shell--gradient-hero .hero.launch-hero { min-height:min(960px,calc(100svh - var(--header-height))); }
  .site-shell--gradient-hero .launch-hero .hero-content { padding-top:clamp(40px,4svh,64px); padding-bottom:clamp(72px,7svh,112px); }
 }
 /* Scale the hero typography proportionally beyond the desktop reference width. */
