@@ -122,5 +122,4 @@
 .film-caption { position:absolute; z-index:1; bottom:12%; left:5%; right:8%; }
 .site-shell--gradient-hero .film-hero .film-stage h1 { color:white; font-size:clamp(32px,min(4.4vw,8vh),94px); line-height:1.08; letter-spacing:-.05em; text-align:left; }
 .film-caption p { color:white; margin:1em 0 0; font-size:clamp(14px,1.15vw,21px); }
-.film-toggle { position:absolute; z-index:2; right:5%; bottom:8%; display:grid; place-items:center; width:44px; height:44px; color:white; background:#102339aa; border:1px solid #ffffff83; border-radius:50%; }
-@media(max-width:600px) { .film-caption { bottom:21%; right:5%; }.film-toggle { bottom:3%; }.site-shell--gradient-hero .film-stage h1 br { display:initial; } }
+@media(max-width:600px) { .film-caption { bottom:21%; right:5%; }.site-shell--gradient-hero .film-stage h1 br { display:initial; } }

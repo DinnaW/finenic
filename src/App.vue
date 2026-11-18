@@ -1,6 +1,6 @@
 <script setup>
 import { ref, nextTick, onMounted, onUnmounted, defineAsyncComponent } from 'vue'
-import { Pause, Play, ArrowUpRight, ArrowRight, ChevronDown, Search, Globe2, Menu, X, Server, Mail, LifeBuoy, BookOpen } from 'lucide-vue-next'
+import { ArrowUpRight, ArrowRight, ChevronDown, Search, Globe2, Menu, X, Server, Mail, LifeBuoy, BookOpen } from 'lucide-vue-next'
 import { domainSuggestions } from './domain'
 import AvatarPill from './components/ui/AvatarPill.vue'
 import DomainStory from './components/DomainStory.vue'
@@ -24,14 +24,6 @@ import './site-motion.css'
 import './launch-hero.css'
 import { useSiteMotion } from './useSiteMotion'
 import { usePageScrollMotion } from './usePageScrollMotion'
-const heroFilm = ref(null)
-const filmPlaying = ref(false)
-async function toggleFilm() {
- const video = heroFilm.value
- if (!video) return
- if (!video.paused) video.pause()
- else try { await video.play() } catch { filmPlaying.value = false }
-}
 const siteRoot = ref(null)
 useSiteMotion(siteRoot)
 usePageScrollMotion(siteRoot)
@@ -148,14 +140,13 @@ onUnmounted(()=>document.removeEventListener('keydown',escape))
      <section v-if="product" ref="productSection" class="product-panel text-left" aria-live="polite"><div class="result-header"><h2>{{product}}</h2><button class="icon-button" aria-label="Close details" @click="product=null"><X :size="18"/></button></div><template v-if="product==='Getting started'"><p>Start with a name that?s short, memorable, and easy to spell. Then choose a hosting plan for the website you want to build.</p><button class="text-link" @click="focusSearch">Find your domain <ArrowRight :size="16"/></button></template><template v-else-if="product==='Help & support'"><p>Finenic is taking shape. Support and contact options will be added as the website launches.</p></template><template v-else-if="product==='Cloud PBX'"><p>Business phone options and Cloud PBX details are coming soon.</p></template><template v-else><p>{{product==='Business email'?'Bring your brand to every conversation with an email address at your own domain.':'Give your website a home with room for your ideas to grow.'}}</p><p class="panel-note">Plans and pricing are coming soon.</p><button class="text-link" @click="focusSearch">Start with your domain <ArrowRight :size="16"/></button></template></section>
     </div>
     <div class="film-stage">
-     <video ref="heroFilm" :autoplay="!reducedMotion" muted loop playsinline preload="metadata" :poster="baseUrl+'video/domain-story.jpg'" aria-hidden="true" @play="filmPlaying=true" @pause="filmPlaying=false">
+     <video :autoplay="!reducedMotion" muted loop playsinline preload="metadata" :poster="baseUrl+'video/domain-story.jpg'" aria-hidden="true">
       <source :src="baseUrl+'video/domain-story.mp4'" type="video/mp4">
      </video>
      <div class="film-caption">
       <h1 id="hero-title">Built for your next big idea.<br>Starting with your domain.</h1>
       <p>Find your name. Build your website. Make it yours.</p>
      </div>
-     <button class="film-toggle" type="button" :aria-label="filmPlaying?'Pause video':'Play video'" @click="toggleFilm"><component :is="filmPlaying?Pause:Play" :size="18" /></button>
     </div>
    </section>
    <DomainStory @search-domain="focusSearch" />

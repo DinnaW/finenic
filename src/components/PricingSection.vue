@@ -1,11 +1,11 @@
 <script setup>
 import { ref } from 'vue'
-import { ArrowUpRight, Check, Globe2, PanelsTopLeft, CalendarDays, ShoppingBag, Utensils, BedDouble, CarFront, UsersRound, Mail, MessageCircle, Phone, Server, Pause, Play } from 'lucide-vue-next'
+import { ArrowUpRight, Check, Globe2, PanelsTopLeft, CalendarDays, ShoppingBag, Utensils, BedDouble, CarFront, UsersRound, Mail, MessageCircle, Phone, Server } from 'lucide-vue-next'
 import PremiumButton from './PremiumButton.vue'
 import FooterMarquee from './ui/FooterMarquee.vue'
 
 const emit = defineEmits(['search-domain','industry','show-messaging','hosting'])
-const notice = ref(''), paused = ref(false)
+const notice = ref('')
 // Draft offers for design review, not published commercial terms.
 const plans = [
  { id:'starter',name:'Starter',description:'Make your first impression a good one.',price:'19',unit:'/ month',footnote:'For your first website',action:'Choose Starter',includes:'A home for your next idea',features:['One website, made for your brand','Connect your own domain','Hosting & SSL included','One business email inbox','Contact forms & enquiries'] },
@@ -13,18 +13,18 @@ const plans = [
  { id:'scale',name:'Scale',description:'A setup shaped around how you work.',price:'Custom',unit:'',footnote:'Let’s find your fit',action:'Talk about your business',includes:'Everything in Business, plus',features:['Multiple websites or locations','Connected apps & workflows','Team roles & permissions','Guided setup & migration','A support plan built around you'] },
 ]
 const services = [
- {label:'Domains',icon:Globe2,color:'#326bb5',action:'domain'},
- {label:'Websites',icon:PanelsTopLeft,color:'#326bb5',action:'website'},
- {label:'Salon Booking',icon:CalendarDays,color:'#7352b5',industry:0},
- {label:'Online Store',icon:ShoppingBag,color:'#a56a36',industry:1},
- {label:'Restaurants',icon:Utensils,color:'#32806c',industry:2},
- {label:'Hotels',icon:BedDouble,color:'#326bb5',industry:3},
- {label:'Car Dealers',icon:CarFront,color:'#7352b5',industry:4},
- {label:'CRM',icon:UsersRound,color:'#a56a36',industry:5},
- {label:'Email',icon:Mail,color:'#32806c',action:'messaging'},
- {label:'SMS',icon:MessageCircle,color:'#a45080',action:'messaging'},
- {label:'Cloud PBX',icon:Phone,color:'#a56a36',action:'pbx'},
- {label:'Hosting',icon:Server,color:'#326bb5',action:'hosting'},
+ {label:'Domains',description:'Find an address for your next idea.',sample:'juniper.studio',icon:Globe2,color:'#326bb5',action:'domain'},
+ {label:'Websites',description:'Give customers a place to find you.',sample:'Home   /   Shop   /   Contact',icon:PanelsTopLeft,color:'#326bb5',action:'website'},
+ {label:'Salon Booking',description:'Let clients choose their next appointment.',sample:'10:30 AM   ·   Haircut',icon:CalendarDays,color:'#7352b5',industry:0},
+ {label:'Online Store',description:'Keep counter and online orders in sync.',sample:'Canvas tote   ×   2',icon:ShoppingBag,color:'#a56a36',industry:1},
+ {label:'Restaurants',description:'Take orders straight from the table.',sample:'Table 04   ·   Pickup ready',icon:Utensils,color:'#32806c',industry:2},
+ {label:'Hotels',description:'Turn room searches into direct bookings.',sample:'Garden suite   ·   2 nights',icon:BedDouble,color:'#326bb5',industry:3},
+ {label:'Car Dealers',description:'Put every showroom on one forecourt.',sample:'City hatchback   ·   In stock',icon:CarFront,color:'#7352b5',industry:4},
+ {label:'CRM',description:'Keep the next follow-up in sight.',sample:'New enquiry   →   Follow-up',icon:UsersRound,color:'#a56a36',industry:5},
+ {label:'Email',description:'Send mail from your own domain.',sample:'hello@juniper.studio',icon:Mail,color:'#32806c',action:'messaging'},
+ {label:'SMS',description:'Reach customers before their appointment.',sample:'Tomorrow at 10:30 AM',icon:MessageCircle,color:'#a45080',action:'messaging'},
+ {label:'Cloud PBX',description:'Route incoming calls to the right desk.',sample:'Reception   →   Sales',icon:Phone,color:'#a56a36',action:'pbx'},
+ {label:'Hosting',description:'Give your website a secure home.',sample:'HTTPS   ·   Connected',icon:Server,color:'#326bb5',action:'hosting'},
 ]
 function choose(plan) {
  notice.value=`${plan.name} is a sample plan. Final pricing and signup will be available when Finenic launches.`
@@ -59,10 +59,19 @@ function selectService(index) {
   </div>
   <div class="pricing-services">
    <div class="pricing-services-heading"><h3>Every tool. One place.</h3><p>From your first domain to your next customer.</p></div>
-   <div class="pricing-pill-rows">
-    <FooterMarquee v-for="row in [0,1]" :key="row" class="pricing-service-marquee" :items="services.slice(row*6,row*6+6).map(item=>item.label)" :label="row===0?'Websites and industry tools':'Communication and business tools'" :paused="paused" :reverse="row===1" @activate="selectService($event+row*6)"><template #item="{item,index}"><span class="service-pill-icon" :style="{'--pill-accent':services[index+row*6].color}"><component :is="services[index+row*6].icon" :size="20" stroke-width="1.6" aria-hidden="true"/></span><span class="service-pill-label">{{ item }}</span></template></FooterMarquee>
-   </div>
-   <button class="pricing-motion-control" :aria-pressed="paused" :aria-label="paused?'Resume service marquee':'Pause service marquee'" @click="paused=!paused"><component :is="paused?Play:Pause" :size="12" aria-hidden="true"/><span>{{ paused?'Resume motion':'Pause motion' }}</span></button>
+   <FooterMarquee class="tool-reel" :items="services.map(service => service.label)" label="Explore Finenic services" @activate="selectService">
+    <template #item="{item,index}">
+     <span class="tool-card" :style="{ '--ink': services[index].color }">
+      <span class="tool-art" aria-hidden="true">
+       <component :is="services[index].icon" class="tool-glyph" :size="80" stroke-width="1.15"/>
+       
+      </span>
+      <span class="tool-title">{{ item }} <ArrowUpRight :size="16" aria-hidden="true"/></span>
+      <span class="tool-description">{{ services[index].description }}</span>
+      <span class="tool-sample" aria-hidden="true">{{ services[index].sample }}</span>
+     </span>
+    </template>
+   </FooterMarquee>
   </div>
  </section>
 </template>
@@ -90,18 +99,36 @@ function selectService(index) {
 .plan-details { padding:24px 6px 0; }.plan-details>p { font-size:12px; color:#6a737b; margin:0 0 10px; min-height:20px; line-height:1.5; }.plan-details ul { list-style:none; margin:0; padding:0; }.plan-details li { border-top:1px solid #edf0f2; padding:13px 0; display:flex; align-items:start; gap:10px; font-size:clamp(12px,.93vw,14px); line-height:1.6; color:#515c66; }.plan-details li svg { margin-top:3px; color:#81949b; }
 .pricing-disclaimer { margin:26px auto 0; text-align:center; font-size:11px; line-height:1.7; color:#7c858d; }
 .pricing-notice { min-height:23px; margin:10px auto 0; text-align:center; font-size:12px; line-height:1.7; color:#486780; max-width:65ch; }
-.pricing-services { margin-top:clamp(24px,3vw,48px); padding:clamp(34px,4vw,64px) var(--section-gutter) clamp(20px,2vw,32px); background:radial-gradient(ellipse at 50% 60%,#e7f4fc88,transparent 66%),linear-gradient(#fff,#f5f9fc 55%,#edf4fa); }
-.pricing-services-heading { text-align:center; margin:0 auto clamp(26px,2.5vw,40px); }.pricing-services-heading h3 { margin:0; font-size:clamp(24px,2.2vw,34px); font-weight:500; letter-spacing:-.04em; line-height:1.2; }.pricing-services-heading>p { margin:12px 0 0; font-size:13px; line-height:1.6; color:#6e7e8a; }
-.pricing-pill-rows { max-width:1320px; margin-inline:auto; }
-.pricing-service-marquee { padding:7px 0 11px; mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent); }
-.pricing-service-marquee :deep(.marquee-group) { gap:14px; padding-right:14px; justify-content:space-around; }
-.pricing-service-marquee :deep(.marquee-group button) { padding:9px 24px 9px 10px; width:auto; height:64px; flex-direction:row; flex-shrink:0; justify-content:flex-start; gap:13px; background:linear-gradient(145deg,#fff,#ffffffd9); border:1px solid #e0e9ef; border-radius:999px; white-space:nowrap; box-shadow:inset 0 1px 0 #fff,0 3px 8px #42627c05; }
-.pricing-service-marquee :deep(.marquee-group button:nth-child(3n+2)) { background:linear-gradient(130deg,#fafdff,#eaf5fc); border-color:#dcebf5; }
-.pricing-service-marquee :deep(.service-pill-icon) { display:grid; place-items:center; width:42px; height:42px; flex-shrink:0; border-radius:50%; border:1px solid #edf1f4; background:linear-gradient(#fff,#f4f7fa); color:var(--pill-accent); box-shadow:inset 0 1px 0 white; }
-.pricing-service-marquee :deep(.service-pill-label) { color:#334653; font-size:clamp(14px,1.1vw,17px); font-weight:500; line-height:1.4; letter-spacing:-.025em; }
-.pricing-motion-control { display:flex; align-items:center; justify-content:center; gap:7px; min-height:36px; padding:0 12px; margin:18px auto 0; border-radius:99px; color:#718492; font-size:10px; }
-.pricing-motion-control:focus-visible { outline:2px solid #1976d2; outline-offset:4px; }
-@media(hover:hover) and (pointer:fine) { .pricing-plan--featured .plan-action:hover { background:#eff4f8; border-color:#eff4f8; }.pricing-service-marquee :deep(.marquee-group button:hover) { border-color:#cbdfea; background:#fbfdff; } }
+.pricing-services {
+ margin-top:clamp(32px,4vw,72px);
+ padding:clamp(64px,7vw,126px) var(--section-gutter) clamp(52px,6vw,104px);
+ background:linear-gradient(180deg,#fff,#f3f7fa);
+}
+.pricing-services-heading { margin:0 auto clamp(32px,3.5vw,64px); text-align:center; }
+.pricing-services-heading h3 { margin:0; font-size:var(--type-section-heading); font-weight:500; letter-spacing:-.045em; line-height:1.12; }
+.pricing-services-heading>p { margin:14px 0 0; font-size:var(--type-description); color:#596976; }
+.tool-reel { padding:6px 4px 16px; }
+.tool-reel :deep(.marquee-group) { gap:clamp(14px,1.35vw,24px); padding-right:clamp(14px,1.35vw,24px); }
+.tool-reel :deep(.marquee-group button) { display:block; padding:0; white-space:normal; text-align:left; letter-spacing:normal; border-radius:20px; }
+.tool-card {
+ --wash:color-mix(in srgb,var(--ink) 11%,white);
+ position:relative; isolation:isolate; overflow:hidden; box-sizing:border-box;
+ display:flex; flex-direction:column; width:clamp(260px,22vw,360px); min-height:clamp(338px,25vw,415px);
+ padding:clamp(23px,2vw,35px); border:1px solid color-mix(in srgb,var(--ink) 19%,white); border-radius:20px;
+ background:linear-gradient(154deg,var(--wash),#fff 94%);
+}
+.tool-card::before {
+ content:''; position:absolute; z-index:-1; inset:0; pointer-events:none;
+ background:radial-gradient(color-mix(in srgb,var(--ink) 27%,transparent) .8px,transparent 1px) 0 0/9px 9px;
+ mask-image:linear-gradient(160deg,#000,transparent 68%);
+}
+.tool-art { flex:1; display:flex; align-items:center; padding:4px 0 24px; }
+.tool-glyph { color:var(--ink); filter:drop-shadow(0 2px 0 white); }
+.tool-card .tool-title { display:flex; align-items:center; justify-content:space-between; gap:10px; color:#162535; font-size:clamp(23px,1.7vw,30px); font-weight:500; line-height:1.15; letter-spacing:-.045em; }
+.tool-title svg { color:var(--ink); }
+.tool-card .tool-description { margin-top:10px; min-height:3em; color:#50606e; font-size:15px; line-height:1.5; }
+.tool-card .tool-sample { display:block; margin-top:22px; padding-top:14px; border-top:1px solid color-mix(in srgb,var(--ink) 18%,white); color:#435564; font:12px/1.5 ui-monospace,monospace; letter-spacing:0; }
+@media(hover:hover) and (pointer:fine) { .pricing-plan--featured .plan-action:hover { background:#eff4f8; border-color:#eff4f8; } }
 @media(max-width:1000px) and (min-width:701px) { .plan-summary { padding:22px 18px; }.plan-title { flex-wrap:wrap; align-content:start; min-height:62px; }.plan-intro>p { margin-top:7px; }.plan-recommended { font-size:9px; }.plan-action { font-size:11px; padding-inline:12px; gap:8px; } }
-@media(max-width:700px) { .pricing-grid { grid-template-columns:1fr; gap:32px; }.pricing-inner { max-width:440px; }.pricing-heading { margin-bottom:30px; }.pricing-heading h2 { font-size:clamp(30px,7.2vw,42px); }.pricing-heading>p { max-width:30ch; margin-inline:auto; }.plan-summary { min-height:284px; padding:26px; }.plan-title h3 { font-size:23px; }.plan-intro>p { font-size:14px; }.plan-price strong { font-size:44px; }.plan-currency { font-size:32px; }.plan-details { padding:20px 4px 0; }.plan-details li { font-size:13px; padding-block:11px; }.pricing-disclaimer { max-width:38ch; }.pricing-services-heading>p { font-size:12px; }.pricing-service-marquee :deep(.marquee-group) { gap:10px; padding-right:10px; }.pricing-service-marquee :deep(.marquee-group button) { height:56px; padding:7px 20px 7px 8px; gap:10px; }.pricing-service-marquee :deep(.service-pill-icon) { width:38px; height:38px; }.pricing-service-marquee :deep(.service-pill-label) { font-size:14px; } }
+@media(max-width:700px) { .pricing-grid { grid-template-columns:1fr; gap:32px; }.pricing-inner { max-width:440px; }.pricing-heading { margin-bottom:30px; }.pricing-heading h2 { font-size:clamp(30px,7.2vw,42px); }.pricing-heading>p { max-width:30ch; margin-inline:auto; }.plan-summary { min-height:284px; padding:26px; }.plan-title h3 { font-size:23px; }.plan-intro>p { font-size:14px; }.plan-price strong { font-size:44px; }.plan-currency { font-size:32px; }.plan-details { padding:20px 4px 0; }.plan-details li { font-size:13px; padding-block:11px; }.pricing-disclaimer { max-width:38ch; }.pricing-services-heading>p { font-size:12px; } }
 </style>
