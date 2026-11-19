@@ -1,4 +1,4 @@
-﻿<script setup>
+<script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -15,7 +15,7 @@ const panels=[
 let media
 onMounted(()=>{
  media=gsap.matchMedia()
- media.add('(min-width: 901px) and (min-height: 800px) and (prefers-reduced-motion: no-preference)',()=>{
+ media.add('(min-width: 901px) and (prefers-reduced-motion: no-preference)',()=>{
   const headerOffset=()=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height'))+16
   const cards=Array.from(root.value.querySelectorAll('.solution-panel'))
   const focusHandlers=[]
@@ -91,10 +91,16 @@ onUnmounted(()=>media?.revert())
 .stack-dim { position:absolute; inset:0; background:#10223b; pointer-events:none; opacity:0; border-radius:inherit; }
 .journey-end { margin:clamp(36px,4vw,60px) 0 0; text-align:center; font-size:13px; color:#667b91; }
 .solution-action:focus-visible { outline:3px solid #5489be; outline-offset:6px; }
-@media(min-width:901px) and (min-height:800px) and (prefers-reduced-motion:no-preference) { .solution-panel { position:sticky; top:calc(var(--header-height) + 16px + var(--stack-index)*24px); z-index:calc(1 + var(--stack-index)); margin-bottom:9vh; }.solution-face { min-height:580px; height:clamp(580px,74svh,760px); }.solution-stack { padding-bottom:2vh; } }
+@media(min-width:901px) and (prefers-reduced-motion:no-preference) { .solution-panel { position:sticky; top:calc(var(--header-height) + 16px + var(--stack-index)*24px); z-index:calc(1 + var(--stack-index)); margin-bottom:9vh; }.solution-face { min-height:580px; height:clamp(580px,74svh,760px); }.solution-stack { padding-bottom:2vh; } }
 @media(hover:hover) and (pointer:fine) { .solution-action:hover { background:#323232; } }
 @media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) { .solution-action>svg { transition:transform 180ms var(--hero-ease-out); }.solution-action:hover:not(:focus-visible)>svg { transform:translate(2px,-2px); } }
 @media(max-width:1100px) { .solution-content { padding:30px; gap:24px; }.solution-main h3 { font-size:32px; }.solution-main>p { font-size:15px; }.solution-kicker { font-size:12px; }.photo-note { left:22px; right:22px; padding:15px; }.solution-features { gap:10px 14px; } }
+@media(min-width:901px) and (max-height:799px) and (prefers-reduced-motion:no-preference) {
+ .solution-face { height:auto; min-height:clamp(360px,72svh,560px); }
+ .solution-content { padding:clamp(20px,3vh,28px) clamp(24px,3vw,42px); gap:16px; }
+ .solution-main h3,.solution-main>p { margin-bottom:16px; }
+
+}
 @media(max-width:900px) { .solution-face { min-height:0; }.solution-content { padding:30px; }.solution-photo { min-height:520px; }.journey-header { gap:30px; }.journey-header>p br { display:none; } }
 @media(max-width:650px) { .business-journey { padding-top:8vw; padding-bottom:14vw; }.journey-header { display:block; margin-bottom:30px; }.journey-header>p { margin-top:22px; }.solution-face { grid-template-columns:1fr; border-radius:14px; }.solution-photo { min-height:0; height:85vw; max-height:430px; }.solution-apps .solution-photo,.solution-apps .solution-content { order:initial; }.solution-content { padding:26px; gap:25px; }.solution-main h3 { font-size:clamp(28px,7vw,37px); margin-bottom:19px; }.solution-main>p { font-size:15px; margin-bottom:24px; }.photo-caption { top:24px; left:24px; font-size:23px; }.photo-note { bottom:22px; }.solution-panel { margin-bottom:22px; }.solution-features { padding-top:18px; }.journey-end { line-height:1.7; max-width:28ch; margin-inline:auto; } }
 @media(prefers-reduced-motion:reduce) { .solution-panel { position:relative; }.solution-face { transform:none!important; }.stack-dim { display:none; } }
