@@ -26,7 +26,7 @@ onUnmounted(()=>{resize?.disconnect();document.removeEventListener('pointerdown'
 <template>
  <header ref="root" class="header-wrap compact-header" :class="{'is-scrolled':scrolled}" @click.stop>
   <div class="compact-row">
-   <a class="brand flex items-center" :href="base" aria-label="finenic home"><svg class="brand-symbol" viewBox="0 0 40 40" aria-hidden="true"><ellipse cx="20" cy="20" rx="5.5" ry="18" transform="rotate(45 20 20)"/><ellipse cx="20" cy="20" rx="5.5" ry="18" transform="rotate(-45 20 20)"/><circle cx="20" cy="20" r="4" fill="white"/></svg><span>finenic<span class="brand-dot">.</span></span></a>
+   <a class="brand flex items-center" :href="base" aria-label="finenic home"><img class="brand-wordmark" :src="base + 'images/brands/finenic.png'" alt="Finenic"></a>
    <nav id="compact-navigation" class="compact-navigation" :class="{'is-open':mobile}" aria-label="Main navigation">
     <div v-for="group in groups" :key="group.name" class="compact-item"><button class="compact-trigger" :aria-expanded="active===group.name" :aria-controls="`compact-${group.name.replaceAll(' ','-')}`" @click="toggle(group.name,$event)" @keydown.down="first(group.name,$event)">{{group.name}}<ChevronDown :size="12"/></button><div v-if="active===group.name" :id="`compact-${group.name.replaceAll(' ','-')}`" class="compact-menu"><button v-for="item in group.items" :key="item[0]" @click="go(item[2])"><span><strong>{{item[0]}}</strong><small>{{item[1]}}</small></span><ArrowUpRight :size="16"/></button></div></div>
     <button class="compact-trigger" @click="go('pricing')">Pricing</button>
@@ -37,6 +37,7 @@ onUnmounted(()=>{resize?.disconnect();document.removeEventListener('pointerdown'
  </header>
 </template>
 <style scoped>
+.brand-wordmark { display:block; width:clamp(112px,8vw,168px); height:auto; }
 .compact-header { color:#172135; border-bottom:1px solid #dce8f180; }
 .header-ribbon { height:30px; padding-right:32px; background:linear-gradient(90deg,#e3f2fd,#edf5fa 50%,#dcecf9); border-bottom:1px solid #c9deed70; position:relative; }
 .header-ribbon :deep(.footer-marquee) { padding:0; mask-image:none; }.header-ribbon :deep(.marquee-group) { gap:60px; padding-right:60px; }.header-ribbon :deep(.marquee-group button) { height:30px; padding:0; gap:60px; font-size:11px; font-weight:550; letter-spacing:0; color:#425d74; }.header-ribbon :deep(.marquee-group span) { color:inherit; }.header-ribbon :deep(.marquee-group svg) { color:#789ab5; }
