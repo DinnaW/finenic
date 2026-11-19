@@ -52,7 +52,7 @@ function selectService(index) {
      <div class="plan-details"><p>{{ plan.includes }}</p><ul><li v-for="feature in plan.features" :key="feature"><Check :size="13" stroke-width="1.7" aria-hidden="true"/><span>{{ feature }}</span></li></ul></div>
     </article>
    </div>
-   <p id="pricing-disclaimer" class="pricing-disclaimer">Sample monthly prices in USD. Final pricing will be confirmed.</p>
+   <p id="pricing-disclaimer" class="pricing-disclaimer"></p>
    <p class="pricing-notice" role="status" aria-live="polite">{{ notice }}</p>
   </div>
   <div class="pricing-services">
