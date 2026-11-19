@@ -47,7 +47,7 @@ function selectService(index) {
    <div class="pricing-grid" aria-describedby="pricing-disclaimer">
     <article v-for="plan in plans" :key="plan.id" class="pricing-plan" :class="{'pricing-plan--featured':plan.featured}" :aria-labelledby="`plan-${plan.id}`">
      <div class="plan-summary">
-      <div class="plan-light" aria-hidden="true"></div>
+
       <div class="plan-intro"><div class="plan-title"><h3 :id="`plan-${plan.id}`">{{ plan.name }}</h3><span v-if="plan.featured" class="plan-recommended">Recommended</span></div><p>{{ plan.description }}</p></div>
       <div class="plan-purchase"><p class="plan-fit">{{ plan.footnote }}</p><p class="plan-price"><span v-if="plan.unit" class="plan-currency">$</span><strong>{{ plan.price }}</strong><span v-if="plan.unit" class="plan-unit">{{ plan.unit }}</span></p><PremiumButton variant="pricing" class="plan-action" @click="choose(plan)">{{ plan.action }}<template #icon><ArrowUpRight :size="15"/></template></PremiumButton></div>
      </div>
@@ -77,9 +77,9 @@ function selectService(index) {
 </template>
 
 <style scoped>
-.pricing-section { position:relative; padding-top:clamp(56px,6vw,100px); background:linear-gradient(#edf4fa,#fff 170px); color:#171b22; }
+.pricing-section { position:relative; padding-top:clamp(68px,7vw,120px); background:linear-gradient(#edf4fa,#fff 170px); color:#171b22; }
 .pricing-inner { width:calc(100% - var(--section-gutter)*2); max-width:1240px; margin-inline:auto; }
-.pricing-heading { text-align:center; margin-bottom:clamp(32px,3.8vw,60px); }
+.pricing-heading { text-align:center; margin-bottom:clamp(28px,3.2vw,52px); }
 .pricing-heading h2 { margin:0; font-size:var(--type-section-heading); font-weight:500; letter-spacing:-.045em; line-height:var(--type-heading-leading); text-wrap:balance; }
 .pricing-heading>p { margin:16px 0 0; color:#69717a; font-size:var(--type-description); line-height:1.7; }
 .pricing-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(16px,1.5vw,26px); }
@@ -89,22 +89,22 @@ function selectService(index) {
 .plan-fit { margin:0 0 10px; font-size:11px; color:#7b838a; }
 .plan-price { margin:0 0 20px; display:flex; align-items:baseline; gap:3px; line-height:1; letter-spacing:-.055em; }.plan-price strong { font-size:clamp(38px,3.3vw,52px); font-weight:550; }.plan-currency { font-size:clamp(27px,2.5vw,38px); font-weight:500; }.plan-unit { margin-left:5px; color:#68717a; font-size:12px; letter-spacing:0; }
 .plan-action { width:100%; min-height:44px; justify-content:space-between; padding-inline:18px; font-size:12px; }
-.plan-recommended { border:1px solid #ffffff24; border-radius:99px; background:#ffffff17; color:#e4e9ec; padding:5px 9px; font-size:10px; line-height:1; white-space:nowrap; }
-.plan-light { display:none; }
-.pricing-plan--featured .plan-summary { background:#141b20; color:#fff; border-color:#283139; box-shadow:inset 0 1px 0 #ffffff14; }
-.pricing-plan--featured .plan-light { display:block; position:absolute; z-index:-1; inset:0; background:radial-gradient(ellipse at 89% 92%,#f4f7fa99 0%,#b6c5d45c 13%,transparent 36%),radial-gradient(ellipse at 73% 43%,#d3dce780 0%,#9daeb736 19%,transparent 42%),linear-gradient(135deg,#0d1418,#202a31 70%,#626f7b); }
-.pricing-plan--featured .plan-light::after { content:''; position:absolute; inset:0; opacity:.18; background-image:radial-gradient(#d7e4ed 0.6px,transparent .8px); background-size:4px 4px; mask-image:linear-gradient(135deg,#000,transparent 58%); }
-.pricing-plan--featured .plan-intro>p { color:#c1cbd3; }.pricing-plan--featured .plan-fit,.pricing-plan--featured .plan-unit { color:#c3cdd5; }
-.pricing-plan--featured .plan-action { background:#fff; color:#171b22; border-color:#fff; box-shadow:inset 0 1px 0 #fff,0 2px 9px #0000000a; }
+.plan-recommended { border:1px solid #c4d6e6; border-radius:99px; background:#f8fbff; color:#355571; padding:5px 9px; font-size:10px; line-height:1; white-space:nowrap; }
+.pricing-plan--featured .plan-summary {
+ color:#172135; border-color:#c4d6e6;
+ background:radial-gradient(ellipse at 92% 90%,#cfe1ef,transparent 55%),linear-gradient(135deg,#fbfdff,#edf4fa 65%);
+ box-shadow:inset 0 1px 0 #fff;
+}
+.pricing-plan--featured .plan-intro>p,.pricing-plan--featured .plan-fit,.pricing-plan--featured .plan-unit { color:#496074; }
 .plan-details { padding:24px 6px 0; }.plan-details>p { font-size:12px; color:#6a737b; margin:0 0 10px; min-height:20px; line-height:1.5; }.plan-details ul { list-style:none; margin:0; padding:0; }.plan-details li { border-top:1px solid #edf0f2; padding:13px 0; display:flex; align-items:start; gap:10px; font-size:clamp(12px,.93vw,14px); line-height:1.6; color:#515c66; }.plan-details li svg { margin-top:3px; color:#81949b; }
 .pricing-disclaimer { margin:26px auto 0; text-align:center; font-size:11px; line-height:1.7; color:#7c858d; }
 .pricing-notice { min-height:23px; margin:10px auto 0; text-align:center; font-size:12px; line-height:1.7; color:#486780; max-width:65ch; }
 .pricing-services {
- margin-top:clamp(32px,4vw,72px);
- padding:clamp(64px,7vw,126px) var(--section-gutter) clamp(52px,6vw,104px);
+ margin-top:clamp(12px,1.25vw,24px);
+ padding:clamp(32px,3vw,56px) var(--section-gutter) clamp(52px,6vw,104px);
  background:linear-gradient(180deg,#fff,#f3f7fa);
 }
-.pricing-services-heading { margin:0 auto clamp(32px,3.5vw,64px); text-align:center; }
+.pricing-services-heading { margin:0 auto clamp(42px,4.5vw,80px); text-align:center; }
 .pricing-services-heading h3 { margin:0; font-size:var(--type-section-heading); font-weight:500; letter-spacing:-.045em; line-height:1.12; }
 .pricing-services-heading>p { margin:14px 0 0; font-size:var(--type-description); color:#596976; }
 .tool-reel { padding:6px 4px 16px; }
@@ -128,7 +128,6 @@ function selectService(index) {
 .tool-title svg { color:var(--ink); }
 .tool-card .tool-description { margin-top:10px; min-height:3em; color:#50606e; font-size:15px; line-height:1.5; }
 .tool-card .tool-sample { display:block; margin-top:22px; padding-top:14px; border-top:1px solid color-mix(in srgb,var(--ink) 18%,white); color:#435564; font:12px/1.5 ui-monospace,monospace; letter-spacing:0; }
-@media(hover:hover) and (pointer:fine) { .pricing-plan--featured .plan-action:hover { background:#eff4f8; border-color:#eff4f8; } }
 @media(max-width:1000px) and (min-width:701px) { .plan-summary { padding:22px 18px; }.plan-title { flex-wrap:wrap; align-content:start; min-height:62px; }.plan-intro>p { margin-top:7px; }.plan-recommended { font-size:9px; }.plan-action { font-size:11px; padding-inline:12px; gap:8px; } }
-@media(max-width:700px) { .pricing-grid { grid-template-columns:1fr; gap:32px; }.pricing-inner { max-width:440px; }.pricing-heading { margin-bottom:30px; }.pricing-heading h2 { font-size:clamp(30px,7.2vw,42px); }.pricing-heading>p { max-width:30ch; margin-inline:auto; }.plan-summary { min-height:284px; padding:26px; }.plan-title h3 { font-size:23px; }.plan-intro>p { font-size:14px; }.plan-price strong { font-size:44px; }.plan-currency { font-size:32px; }.plan-details { padding:20px 4px 0; }.plan-details li { font-size:13px; padding-block:11px; }.pricing-disclaimer { max-width:38ch; }.pricing-services-heading>p { font-size:12px; } }
+@media(max-width:700px) { .pricing-grid { grid-template-columns:1fr; gap:32px; }.pricing-inner { max-width:440px; }.pricing-heading { margin-bottom:26px; }.pricing-heading h2 { font-size:clamp(30px,7.2vw,42px); }.pricing-heading>p { max-width:30ch; margin-inline:auto; }.plan-summary { min-height:284px; padding:26px; }.plan-title h3 { font-size:23px; }.plan-intro>p { font-size:14px; }.plan-price strong { font-size:44px; }.plan-currency { font-size:32px; }.plan-details { padding:20px 4px 0; }.plan-details li { font-size:13px; padding-block:11px; }.pricing-disclaimer { max-width:38ch; }.pricing-services-heading>p { font-size:12px; } }
 </style>

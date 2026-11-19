@@ -1,4 +1,4 @@
-﻿<script setup>
+<script setup>
 import { ref } from 'vue'
 import { ArrowUpRight, ArrowRight, Check, CalendarDays, ShoppingBag, MessageCircle } from 'lucide-vue-next'
 import SpecularButton from './specular/SpecularButton.vue'
@@ -27,7 +27,7 @@ function act(type) {
    <div class="business-stories">
     <article class="business-story booking-story">
      <div class="story-scene booking-scene">
-      <img :src="`${base}images/business/salon.jpg`" alt="A stylist working with a client in a salon" width="800" height="900" loading="lazy">
+      <img :src="`${base}images/editorial/stylist.jpg`" alt="A stylist working with a client in a salon" width="800" height="900" loading="lazy">
       <div class="scene-shade" aria-hidden="true"></div>
       <span class="scene-label">Your time, well booked.</span>
       <div class="booking-preview" aria-hidden="true">
@@ -41,7 +41,7 @@ function act(type) {
     </article>
     <article class="business-story commerce-story">
      <div class="story-scene commerce-scene">
-      <img :src="`${base}images/business/store.jpg`" alt="Clothing displayed in an independent shop" width="800" height="900" loading="lazy">
+      <img :src="`${base}images/editorial/boutique.jpg`" alt="Clothing displayed in an independent shop" width="800" height="900" loading="lazy">
       <div class="scene-shade" aria-hidden="true"></div>
       <span class="scene-label">Your shop, everywhere.</span>
       <div class="order-preview" aria-hidden="true"><span class="order-icon"><ShoppingBag :size="21" stroke-width="1.5"/></span><div><strong>Another order. All connected.</strong><span>Online checkout → In-store stock</span></div><span class="order-check"><Check :size="16"/></span></div>

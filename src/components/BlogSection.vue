@@ -7,24 +7,24 @@ const posts = [
     category: 'Domains',
     title: 'Choose a domain name people remember',
     excerpt: 'A clear, distinctive domain makes it easier for customers to find you, remember you, and come back.',
-    image: 'images/solutions/domain-cafe.jpg',
-    imageAlt: 'Small business owner thinking through ideas at a cafe',
+    image: 'images/editorial/studio-desk.jpg',
+    imageAlt: 'A person working at a laptop with an open notebook',
     readTime: '4 min read'
   },
   {
     category: 'Websites',
     title: 'What a small-business website needs on day one',
     excerpt: 'Start with a clear offer, the answers customers need, and a simple next step.',
-    image: 'images/business/crm.jpg',
-    imageAlt: 'A small team working together around laptops',
+    image: 'images/editorial/domain-notebook.jpg',
+    imageAlt: 'A hand-drawn website layout in a spiral notebook',
     readTime: '6 min read'
   },
   {
     category: 'Growth',
     title: 'Bring your shop to life online',
     excerpt: 'Bring your products, brand, and customer experience together in a practical online storefront.',
-    image: 'images/business/store.jpg',
-    imageAlt: 'A clothing shop with products arranged throughout the store',
+    image: 'images/editorial/boutique-team.jpg',
+    imageAlt: 'Two florists preparing flowers at their shop counter',
     readTime: '5 min read'
   }
 ]

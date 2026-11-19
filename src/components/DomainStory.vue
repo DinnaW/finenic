@@ -2,7 +2,7 @@
 import { ArrowUpRight, Globe2, Mail, ShieldCheck } from 'lucide-vue-next'
 
 const emit = defineEmits(['search-domain'])
-const photo = import.meta.env.BASE_URL + 'images/business/store.jpg'
+const photo = import.meta.env.BASE_URL + 'images/editorial/shop-opening.jpg'
 const domainTools = [
   { icon: Globe2, title: 'Your domain', detail: 'An address customers remember' },
   { icon: ShieldCheck, title: 'DNS & privacy', detail: 'Manage your domain settings' },
@@ -31,7 +31,7 @@ const appTools = ['Bookings', 'Online orders', 'Point of sale', 'Room inventory'
           </div>
         </article>
         <article class="story-card photo-card">
-          <img :src="photo" alt="" loading="lazy">
+          <img :src="photo" alt="A florist opening her shop for the day" loading="lazy">
           <h3>Open your doors online.</h3>
           <p>Give people a place to browse your products, book a service or get in touch.</p>
           <a class="story-link" href="#business-services">Build your website <ArrowUpRight/></a>

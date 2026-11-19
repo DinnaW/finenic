@@ -1,0 +1,6 @@
+﻿- boutique.jpg — https://www.pexels.com/photo/3965545/
+- boutique-team.jpg — https://www.pexels.com/photo/5410047/
+- domain-notebook.jpg — https://www.pexels.com/photo/196644/
+- shop-opening.jpg — https://www.pexels.com/photo/5414060/
+- studio-desk.jpg — https://www.pexels.com/photo/4050315/
+- stylist.jpg — https://www.pexels.com/photo/3993449/

@@ -28,7 +28,7 @@ function backToTop() {
    <div class="footer-grid">
     <aside class="footer-aside">
      <div><p class="footer-label">Start a conversation</p><div class="footer-circles"><button @click="emit('search-domain')" aria-label="Find a domain"><Globe2 :size="18"/></button><button @click="emit('industry',0)" aria-label="Explore business apps"><Grid2X2 :size="17"/></button><button @click="emit('support')" aria-label="Contact and support"><MessageCircle :size="18"/></button></div></div>
-     <figure class="footer-photo"><img :src="`${base}images/solutions/domain-cafe.jpg`" alt="A man exploring ideas on his phone at a café" width="1200" height="800" loading="lazy" decoding="async"><figcaption>Big ideas start somewhere.</figcaption></figure>
+     <figure class="footer-photo"><img :src="`${base}images/editorial/studio-desk.jpg`" alt="A workspace with a laptop and open notebook" width="1200" height="800" loading="lazy" decoding="async"><figcaption>Big ideas start somewhere.</figcaption></figure>
     </aside>
     <div class="footer-main">
      <div class="footer-directory">
