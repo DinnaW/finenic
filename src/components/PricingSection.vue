@@ -8,10 +8,10 @@ const emit = defineEmits(['search-domain','industry','show-messaging','hosting']
 const notice = ref('')
 // Monthly USD placeholders for design review.
 const plans = [
- { id:'saptivo', name:'Saptivo', description:'Keep leads and customer conversations together.', price:'15', unit:'/ month', footnote:'CRM', action:'Explore Saptivo', industry:5, includes:'CRM tools', features:['Customer records','Lead management','Sales follow-ups'] },
- { id:'saptify', name:'Saptify', description:'Manage appointments and checkout in one place.', price:'16', unit:'/ month', footnote:'Appointment booking & POS', action:'Explore Saptify', industry:0, featured:true, includes:'Booking tools', features:['Online appointment booking','Client rebooking','Point of sale'] },
+ { id:'saptivo', name:'Saptivo CRM', description:'Keep leads and customer conversations together.', price:'15', unit:'/ month', footnote:'CRM', action:'Explore Saptivo CRM', industry:5, includes:'CRM tools', features:['Customer records','Lead management','Sales follow-ups'] },
+ { id:'saptify', name:'Saptify Bookings', description:'Manage appointments and checkout in one place.', price:'16', unit:'/ month', footnote:'Appointment booking & POS', action:'Explore Saptify Bookings', industry:0, featured:true, includes:'Booking tools', features:['Online appointment booking','Client rebooking','Point of sale'] },
  { id:'cartinno-food', name:'Cartinno Food', description:'Take orders online, at the table and at the counter.', price:'15', unit:'/ month', footnote:'Restaurant website, ordering & POS', action:'Explore Cartinno Food', industry:2, includes:'Restaurant tools', features:['Restaurant ordering website','QR menu & table ordering','Restaurant POS'] },
- { id:'cartinno', name:'Cartinno', description:'Sell online and in store with connected stock.', price:'20', unit:'/ month', footnote:'Ecommerce website & POS', action:'Explore Cartinno', industry:1, includes:'Retail tools', features:['Ecommerce storefront','In-store POS','Synced inventory'] },
+ { id:'cartinno', name:'Cartinno Ecommerce', description:'Sell online and in store with connected stock.', price:'20', unit:'/ month', footnote:'Ecommerce website & POS', action:'Explore Cartinno Ecommerce', industry:1, includes:'Retail tools', features:['Ecommerce storefront','In-store POS','Synced inventory'] },
 ]
 const services = [
  {label:'Domains',description:'Find an address for your next idea.',sample:'juniper.studio',icon:Globe2,color:'#326bb5',action:'domain'},
@@ -126,6 +126,10 @@ function selectService(index) {
 .tool-title svg { color:var(--ink); }
 .tool-card .tool-description { margin-top:10px; min-height:3em; color:#50606e; font-size:15px; line-height:1.5; }
 .tool-card .tool-sample { display:block; margin-top:22px; padding-top:14px; border-top:1px solid color-mix(in srgb,var(--ink) 18%,white); color:#435564; font:12px/1.5 ui-monospace,monospace; letter-spacing:0; }
+@media (min-width:1101px) and (max-width:1920px) {
+ .pricing-plan--retail .plan-title { container-type:inline-size; }
+ .pricing-plan--retail .plan-title h3 { font-size:clamp(16px,10cqw,24px); white-space:nowrap; }
+}
 @media(max-width:1100px) and (min-width:701px) { .pricing-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .plan-summary { padding:22px 18px; }.plan-title { flex-wrap:wrap; align-content:start; min-height:62px; }.plan-intro>p { margin-top:7px; }.plan-action { font-size:11px; padding-inline:12px; gap:8px; } }
 @media(max-width:700px) { .pricing-grid { grid-template-columns:1fr; gap:32px; }.pricing-inner { max-width:440px; }.pricing-heading { margin-bottom:26px; }.pricing-heading h2 { font-size:clamp(30px,7.2vw,42px); }.pricing-heading>p { max-width:30ch; margin-inline:auto; }.plan-summary { min-height:284px; padding:26px; }.plan-title h3 { font-size:23px; }.plan-intro>p { font-size:14px; }.plan-price strong { font-size:44px; }.plan-currency { font-size:32px; }.plan-details { padding:20px 4px 0; }.plan-details li { font-size:13px; padding-block:11px; }.pricing-disclaimer { max-width:38ch; }.pricing-services-heading>p { font-size:12px; } }
 </style>
