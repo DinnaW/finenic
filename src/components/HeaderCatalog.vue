@@ -143,7 +143,14 @@ function hover(event, callback) { if(event.pointerType==='mouse') callback() }
 .summary { padding:17px 20px 20px; background:linear-gradient(0deg,#f6faff 40%,#f6faffcb); }
 .summary h3 { margin:0; font-size:22px; line-height:1.15; font-weight:550; letter-spacing:-.045em; }
 .summary p { margin:8px 0 16px; font-size:13px; line-height:1.55; color:#536477; }
-.summary :is(button,a) { display:inline-flex; background:#162941; color:white; border-radius:99px; padding:9px 14px; font-weight:550; }
+.summary :is(button,a) {
+ display:inline-flex; padding:9px 14px; border:1px solid #333; border-radius:99px;
+ background:linear-gradient(165deg,#242424,#080808); color:#fff; font-weight:600;
+ box-shadow:inset 0 1px 0 #ffffff20,0 6px 14px -8px #0006;
+}
+@media(hover:hover) {
+ .summary :is(button,a):hover { border-color:#666; }
+}
 footer { padding:12px 24px; border-top:1px solid var(--rule); background:#f8fafc; }
 @media(prefers-reduced-motion:no-preference) {
  .catalog { animation:catalog-arrive .2s ease-out; }
