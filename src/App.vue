@@ -75,6 +75,8 @@ async function navigateAssistant(action) {
  if (action.type === 'pricing') { const heading = document.getElementById('pricing-heading'); heading?.focus({preventScroll:true}); heading?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'}) }
 }
 async function headerAction(action) {
+ if(typeof action==='object') return industryShowcase.value?.showIndustry(action.industry,action.card)
+ if(action==='support') return openSupportChat()
  if(action==='domain') return focusSearch()
  if(action==='messaging') return industryShowcase.value?.showMessaging()
  if(action==='apps') return industryShowcase.value?.showIndustry(0)

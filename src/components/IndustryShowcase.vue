@@ -79,8 +79,16 @@ async function showMessaging() {
   grid.scrollIntoView({ behavior: reduced.value ? 'instant' : 'smooth', block:'center' })
   target.querySelector('.product-action')?.focus({ preventScroll:true })
 }
-async function showIndustry(index = 0) {
+async function showIndustry(index = 0, cardId) {
   await select(index, true)
+  if (cardId) {
+    const grid = track()
+    const target = grid?.children[industries[index].cards.findIndex(card => card.id === cardId)]
+    if (target) {
+      grid.scrollLeft = target.offsetLeft - grid.offsetLeft
+      target.querySelector('.product-action')?.focus({ preventScroll:true })
+    }
+  }
   section.value?.scrollIntoView({ behavior: reduced.value ? 'instant' : 'smooth', block:'start' })
 }
 defineExpose({ showMessaging, showIndustry })

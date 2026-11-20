@@ -1,26 +1,29 @@
 <script setup>
 import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 import { ChevronDown, ArrowUpRight, UserRound, ShoppingCart, Menu, X, Pause, Play, Plus } from 'lucide-vue-next'
+import { navigation as groups } from '../data/navigation'
+import HeaderCatalog from './HeaderCatalog.vue'
 defineProps({ scrolled:Boolean })
 const emit=defineEmits(['action'])
-const root=ref(null), active=ref(null), mobile=ref(false), paused=ref(false)
+const root=ref(null), active=ref(null), mobile=ref(false)
 const base=import.meta.env.BASE_URL
-const strip=['Your idea. Your domain.','Websites that mean business','Bookings, orders & more','Your next chapter starts here']
-const groups=[
- {name:'Domains',items:[['Find a domain','Find the name for your next idea.','domain'],['Transfer a domain','Explore domain transfer guidance.','faq']]},
- {name:'Websites',items:[['Business websites','Build a home for your business.','websites'],['Business apps','Bookings, orders and daily work.','apps']]},
- {name:'Email',items:[['Business email','Your name in every conversation.','messaging']]},
- {name:'SMS',items:[['SMS & reminders','Keep your customers in the loop.','messaging']]},
- {name:'Cloud PBX',items:[['Cloud PBX','Business phone options.','pbx']]},
- {name:'Hosting',items:[['Web hosting','A home for your website.','hosting'],['Hosting & maintenance','Keep your website running smoothly.','maintenance']]},
-]
+
 let resize, opener
 function toggle(name,event) { opener=event.currentTarget;active.value=active.value===name?null:name }
 function go(action) { active.value=null;mobile.value=false;emit('action',action) }
 function outside(event) { if(!root.value?.contains(event.target)){active.value=null;mobile.value=false} }
-function escape(event) { if(event.key==='Escape'){active.value=null;mobile.value=false;opener?.focus()} }
-async function first(name,event) { event.preventDefault();opener=event.currentTarget;active.value=name;await nextTick();root.value.querySelector('.compact-menu button')?.focus() }
-onMounted(()=>{resize=new ResizeObserver(()=>document.documentElement.style.setProperty('--header-height',`${root.value.offsetHeight}px`));resize.observe(root.value);document.addEventListener('pointerdown',outside);document.addEventListener('keydown',escape)})
+function escape(event) { if(event.key!=='Escape'||(!active.value&&!mobile.value)) return; if(active.value){active.value=null;opener?.focus()} else {mobile.value=false;root.value.querySelector('.compact-toggle')?.focus()} }
+async function first(name,event) { event.preventDefault();opener=event.currentTarget;active.value=name;await nextTick();root.value.querySelector('.mega-panel button')?.focus() }
+onMounted(()=>{
+ resize = new ResizeObserver(([entry])=>{
+  document.documentElement.style.setProperty('--header-height', `${root.value.offsetHeight}px`)
+  // Keep the dropdown proportional to its 1440px desktop layout on wider viewports.
+  root.value.style.setProperty('--menu-scale', Math.max(1, entry.contentRect.width / 1440))
+ })
+ resize.observe(root.value)
+ document.addEventListener('pointerdown',outside)
+ document.addEventListener('keydown',escape)
+})
 onUnmounted(()=>{resize?.disconnect();document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',escape);document.documentElement.style.removeProperty('--header-height')})
 </script>
 <template>
@@ -28,7 +31,8 @@ onUnmounted(()=>{resize?.disconnect();document.removeEventListener('pointerdown'
   <div class="compact-row">
    <a class="brand flex items-center" :href="base" aria-label="finenic home"><img class="brand-wordmark" :src="base + 'images/brands/finenic.png'" alt="Finenic"></a>
    <nav id="compact-navigation" class="compact-navigation" :class="{'is-open':mobile}" aria-label="Main navigation">
-    <div v-for="group in groups" :key="group.name" class="compact-item"><button class="compact-trigger" :aria-expanded="active===group.name" :aria-controls="`compact-${group.name.replaceAll(' ','-')}`" @click="toggle(group.name,$event)" @keydown.down="first(group.name,$event)">{{group.name}}<ChevronDown :size="12"/></button><div v-if="active===group.name" :id="`compact-${group.name.replaceAll(' ','-')}`" class="compact-menu"><button v-for="item in group.items" :key="item[0]" @click="go(item[2])"><span><strong>{{item[0]}}</strong><small>{{item[1]}}</small></span><ArrowUpRight :size="16"/></button></div></div>
+    <div v-for="group in groups" :key="group.name" class="compact-item"><button class="compact-trigger" :aria-expanded="active===group.name" :aria-controls="`compact-${group.name.replaceAll(' ','-')}`" @click="toggle(group.name,$event)" @keydown.down="first(group.name,$event)">{{group.name}}<ChevronDown :size="12"/></button><div v-if="active===group.name" :id="`compact-${group.name.replaceAll(' ','-')}`" class="mega-panel">
+      <HeaderCatalog :group="group" :base="base" @action="go" @close="active=null;mobile=false"/></div></div>
     <button class="compact-trigger" @click="go('pricing')">Pricing</button>
     <div class="compact-mobile-links"><button @click="go('deals')">Deals</button><button @click="go('faq')">Help Center</button></div>
    </nav>
@@ -72,4 +76,8 @@ onUnmounted(()=>{resize?.disconnect();document.removeEventListener('pointerdown'
  .compact-notice strong { font-size:clamp(16px,.75vw,20px); }
  .compact-notice p,.compact-notice>button { font-size:clamp(14px,.65vw,17px); }
 }
+.compact-navigation > .compact-item { position:static; }
+.mega-panel { position:absolute; z-index:4; top:100%; inset-inline:5%; max-width:calc(1040px * var(--menu-scale,1)); margin:auto; }
+#compact-Websites { max-width:calc(1360px * var(--menu-scale,1)); }
+@media(max-width:1050px) { .mega-panel { position:static; } }
 </style>
