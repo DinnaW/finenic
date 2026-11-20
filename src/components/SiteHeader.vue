@@ -31,7 +31,7 @@ onUnmounted(()=>{resize?.disconnect();document.removeEventListener('pointerdown'
   <div class="compact-row">
    <a class="brand flex items-center" :href="base" aria-label="finenic home"><img class="brand-wordmark" :src="base + 'images/brands/finenic.png'" alt="Finenic"></a>
    <nav id="compact-navigation" class="compact-navigation" :class="{'is-open':mobile}" aria-label="Main navigation">
-    <div v-for="group in groups" :key="group.name" class="compact-item"><button class="compact-trigger" :aria-expanded="active===group.name" :aria-controls="`compact-${group.name.replaceAll(' ','-')}`" @click="toggle(group.name,$event)" @keydown.down="first(group.name,$event)">{{group.name}}<ChevronDown :size="12"/></button><div v-if="active===group.name" :id="`compact-${group.name.replaceAll(' ','-')}`" class="mega-panel">
+    <div v-for="group in groups" :key="group.name" class="compact-item"><button class="compact-trigger" :aria-expanded="active===group.name" :aria-controls="`compact-${group.name.replaceAll(' ','-')}`" @click="toggle(group.name,$event)" @keydown.down="first(group.name,$event)">{{ group.name === 'Websites' ? 'Solutions' : group.name }}<ChevronDown :size="12"/></button><div v-if="active===group.name" :id="`compact-${group.name.replaceAll(' ','-')}`" class="mega-panel">
       <HeaderCatalog :group="group" :base="base" @action="go" @close="active=null;mobile=false"/></div></div>
     <button class="compact-trigger" @click="go('pricing')">Pricing</button>
     <div class="compact-mobile-links"><button @click="go('deals')">Deals</button><button @click="go('faq')">Help Center</button></div>
